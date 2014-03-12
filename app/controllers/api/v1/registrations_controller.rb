@@ -5,20 +5,24 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
   def create
-    # user = User.new(params[:user])
-    build_resource(sign_up_params)
+    #################################################
+    # might want to limit params for security later #
+    #################################################
+    params.permit!
+    user = User.new(params[:user])
+    # build_resource(sign_up_params[:user])
     # resource.skip_confirmation!
-    if resource.save
-      sign_in resource
+    if user.save
+      sign_in user
       render :status => 200,
            :json => { :success => true,
                       :info => "Registered",
-                      :data => { :user => resource,
-                                 :auth_token => current_user.authentication_token } }
+                      :data => { :auth_token => current_user.authentication_token,
+                                 :email => current_user.email} }
     else
       render :status => :unprocessable_entity,
              :json => { :success => false,
-                        :info => resource.errors,
+                        :info => user.errors,
                         :data => {} }
     end
   end
