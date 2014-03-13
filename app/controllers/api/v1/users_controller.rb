@@ -249,6 +249,13 @@ class Api::V1::UsersController < ApplicationController
             user_json = params[:activity] #activity contains the activity_id the user may want to join
             activity_id = user_json[:activity_id]
             activity= Activity.find_by(:id => activity_id)
+
+            if current_user.id == activity.host_id
+                render (:status => 200,
+                            :json => { :success => true,
+                                        :info => "already joined activity as host"}) and return
+            end
+
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => activity.host_id, :status => ACCEPTED)
             if friend 
                 atd = Attendee.find_by(:user_id => current_user.id, :activity_id => activity_id, :role => GUEST)

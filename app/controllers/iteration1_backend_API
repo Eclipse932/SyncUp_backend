@@ -1,0 +1,91 @@
+All data returned or sent to server is in JSON format.
+For return type:
+
+success is of type boolean. info is a string which gives more detailed information for what the action does. data is the returned data from the server
+
+Below only shows the return type of success request. On failure, success is false. info is the reason why the request failed.
+
+RegistrationController:
+post  http://base_url/api/vi/registrations
+To server:
+{ user :{email, password, password_confirm}}
+From server:
+{success, info, data: {auth_token, email}}
+===========================================================================================
+
+SessionController:
+post  http://base_url/api/vi/sessions
+To server:
+{ user :{email, password}}
+From server:
+{success, info, data: {auth_token, email}}
+
+delete http://base_url/api/vi/sessions
+From server:
+{success, info}}
+===========================================================================================
+
+UserController:
+post http://base_url/api/vi/activities
+To server:
+{activity: { pass in as many fields as possible for the activity to be created}}
+From server:
+{success, info, data(an activity record)}
+
+get http://base_url/api/vi/activities
+From server:
+{}
+
+post http://base_url/api/vi/requestFriend
+To server:
+{}
+From server:
+{}
+
+post http://base_url/api/vi/confirmFriend
+To server:
+{}
+From server:
+{}
+
+get http://base_url/api/vi/getPendingFriends
+From server:
+{}
+
+get http://base_url/api/vi/getSentRequests
+From server:
+{}
+
+post http://base_url/api/vi/deleteRequest
+To server:
+{}
+From server:
+{}
+
+post http://base_url/api/vi/searchUser
+To server:
+{}
+From server:
+{}
+
+get http://base_url/api/vi/getFriends
+From server:
+{}
+
+post http://base_url/api/vi/joinActivity
+To server:
+{}
+From server:
+{}
+
+get http://base_url/api/vi/getFriendsActivities
+From server:
+{}
+
+
+
+
+
+
+
+
