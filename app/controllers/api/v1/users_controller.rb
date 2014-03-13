@@ -55,21 +55,18 @@ class Api::V1::UsersController < ApplicationController
                     second_friend.save
                     render :status => 200,
                         :json => { :success => true,
-                                :info => "accept friend",
-                                :data => {} }
+                                :info => "accept friend"}
                 else 
                     if !(friend.status == ACCEPTED && second_friend.status == ACCEPTED)
                         friend.destroy
                         second_friend.destroy
                         render :status => 200,
                             :json => { :success => true,
-                                    :info => "reject friend",
-                                    :data => {} }
+                                    :info => "reject friend"}
                     else
                         render :status => 200,
                             :json => { :success => false,
-                                    :info => "invalid reject",
-                                    :data => {} }
+                                    :info => "invalid reject"}
                     end
                 end
 
@@ -143,7 +140,7 @@ class Api::V1::UsersController < ApplicationController
     def deleteRequest
         if current_user
             params.permit!
-            friend_json = params[:friendship] #friendship contains the user which the current user wants to delete friend request with or delete friend relation with
+            friend_json = params[:friendship] #friendship contains the user_id which the current user wants to delete friend request with or delete friend relationship with
             request_id = friend_json[:request_id]
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => request_id)
             second_friend = Friendship.find_by(:user_id => request_id, :friend_id => current_user.id)

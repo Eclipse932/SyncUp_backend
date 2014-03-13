@@ -39,39 +39,40 @@ From server:
 
 post http://base_url/api/vi/requestFriend
 To server:
-{}
+{frienship :{friend_id}} friend_id is the user_id the current user requests to befriend with.
 From server:
-{}
+{success, info}
 
 post http://base_url/api/vi/confirmFriend
 To server:
-{}
+{friendship : {request_id, response}} request_id is the user_id which the current user accepts as friend; response is a boolean which indicates
+                                      whether the request is accepted or not
 From server:
-{}
+{success, info, }
 
 get http://base_url/api/vi/getPendingFriends
 From server:
-{}
+{success, info, data(a list of pending friendship requests of the current user)}
 
 get http://base_url/api/vi/getSentRequests
 From server:
-{}
+{success,info, data(a list of friendship requests already sent by the current user)}
 
 post http://base_url/api/vi/deleteRequest
 To server:
-{}
+{friendship :{request_id}} //request_id is the user_id you want to delete your friend request or friend relationship with
 From server:
-{}
+{success,info}
 
 post http://base_url/api/vi/searchUser
 To server:
-{}
+{user: {name}} or {user:{email}} or {user: {id}}
 From server:
-{}
+{success, info, data(a list of users as the research result)}
 
 get http://base_url/api/vi/getFriends
 From server:
-{}
+{success, info, data(a list of all the friends of the current user)}
 
 post http://base_url/api/vi/joinActivity
 To server:
