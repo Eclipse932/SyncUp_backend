@@ -9,26 +9,35 @@ class Api::V1::UsersController < ApplicationController
 
 			friend_json = params[:friendship] #friendship contains friend_id
             friend_json[:user_id] = current_user.id
-			friend = Friendship.new(friend_json)
-            friend.status = REQUESTED
-            second_friend = Friendship.new(:user_id => friend_json[:friend_id], :friend_id => current_user.id, :status => PENDING)
-			if friend.save and second_friend.save
-				render :status => 200,
-					:json => { :success => true,
-			                   :info => "request friend"}
-            else 
-                render :status => 200,
-                    :json => { :success => false,
-                               :info => "fail to save request"}
+            friend = Friendship.find_by(:user_id => current_user.id, :friend_id => friend_json[:friend_id])
+            if friend
+			     friend = Friendship.new(friend_json)
+                 friend.status = REQUESTED
+
+                 second_friend = Friendship.new(:user_id => friend_json[:friend_id], :friend_id => current_user.id, :status => PENDING)
+			     if friend.save and second_friend.save
+				    render :status => 200,
+					   :json => { :success => true,
+			                     :info => "request friend"}
+                 else 
+                    render :status => 200,
+                        :json => { :success => false,
+                                :info => "fail to save request"}
             
-			end
+			     end
+            else 
+                 render :status => 200,
+                       :json => { :success => true,
+                                 :info => "already sent request"}
+            end
 		else 
 			failure
 		end
 
 	end
 
-	def confirmFriend
+	
+    def confirmFriend
 		if current_user
 			params.permit!
 
@@ -42,7 +51,8 @@ class Api::V1::UsersController < ApplicationController
                 if friend_json[:response] == true
                     friend.status = ACCEPTED
                     second_friend.status = ACCEPTED
-
+                    friend.save
+                    second_friend.save
                     render :status => 200,
                         :json => { :success => true,
                                 :info => "accept friend",
@@ -64,7 +74,7 @@ class Api::V1::UsersController < ApplicationController
                 end
 
             else 
-                render :status => 401,
+                render :status => 200,
                         :json => { :success => false,
                                  :info => "request doesn't exist"}
             end
@@ -79,7 +89,7 @@ class Api::V1::UsersController < ApplicationController
 
     def getFriends
         if current_user
-            friend_list = Friendship.find(:all, :conditions => {:user_id => current_user.id, :status => ACCEPTED})
+            friend_list = Friendship.where(:user_id => current_user.id, :status => ACCEPTED).all
             render :status => 200,
                 :json => { :success => true,
                             :info => "get all friends",
@@ -96,28 +106,32 @@ class Api::V1::UsersController < ApplicationController
         if current_user
             params.permit!
             friend_json = params[:user] #user contains the friend name or friend id or friend email which the current user wants to search for 
-            friend = nil
+            
             if friend_json[:name]
-                friend = User.find_by(:name => friend_json[:name])
-
+                friend = User.where(:name => friend_json[:name]).all
+                render :status => 200,
+                    :json => { :success => true,
+                            :info => "find user by name",
+                            :data => friend}
             elsif friend_json[:id]
                 friend = User.find_by(:id => friend_json[:id])
-            else 
-                friend = User.find_by(:email => friend_json[:email])
-            end
-
-            if friend
                 render :status => 200,
-                :json => { :success => true,
-                            :info => "find the user",
-                            :data => friend}
+                    :json => { :success => true,
+                            :info => "find user by id",
+                            :data => [friend]}
+
+            elsif friend_json[:email]
+                friend = User.find_by(:email => friend_json[:email])
+                render :status => 200,
+                    :json => { :success => true,
+                            :info => "find user by email",
+                            :data => [friend]}
+
             else
                 render :status => 200,
-                :json => { :success => false,
-                            :info => "cannot find user",
-                            :data => {}}
+                    :json => { :success => false,
+                            :info => "cannot find user"}
             end
-
         else 
             failure
         end
@@ -152,7 +166,7 @@ class Api::V1::UsersController < ApplicationController
 
     def getPendingFriends
         if current_user
-            friend_list = Friendship.find(:all, :conditions => {:user_id => current_user.id, :status => PENDING})
+            friend_list = Friendship.where(:user_id => current_user.id, :status => PENDING).all
             render :status => 200,
                 :json => { :success => true,
                             :info => "get pending friend requests",
@@ -169,7 +183,7 @@ class Api::V1::UsersController < ApplicationController
 
     def getSentRequests
         if current_user
-            friend_list = Friendship.find(:all, :conditions => {:user_id => current_user.id, :status => REQUESTED})
+            friend_list = Friendship.where(:user_id => current_user.id, :status => REQUESTED).all
             render :status => 200,
                 :json => { :success => true,
                             :info => "get sent friend requests",
@@ -202,7 +216,7 @@ class Api::V1::UsersController < ApplicationController
 			                      :info => "Create an activity",
 			                      :data => act }
 			  	else
-			  		render :status => 401,
+			  		render :status => 200,
 		           		:json => { :success => false,
 		                      	 :info => "activity relation failed to save"}
 		    	end
@@ -217,12 +231,12 @@ class Api::V1::UsersController < ApplicationController
 
 	def myActivities
 		if current_user
-		  ids = Attendee.find(:all, :conditions => {:user_id => current_user.id}).map(&:activity_id)
+          attendees = Attendee.where(:user_id => current_user.id).all
+		  ids = attendees.map(&:activity_id)
 		  render :status => 200,
 	               :json => { :success => true,
 	                       :info => "activites!",
-	                       :data => Activity.find(:all,
-	                      	    :conditions => {:id => ids}) }
+	                       :data => Activity.where(:id => ids).all }
 	                       # :data => current_user.activites}
         else
             failure
@@ -265,8 +279,26 @@ class Api::V1::UsersController < ApplicationController
         end
     end
 
+
+    def getFriendsActivities
+        if current_user
+            friends = Friendship.where(:user_id => current_user.id, :status => ACCEPTED).all
+            friendsActivities = Set.new
+            friends.each do |friend|
+                friendsActivities += Attendee.where(:user_id => friend.friend_id).all
+            end
+             render :status => 200,
+                            :json => { :success => true,
+                                        :info => "get all friend activities"
+                                        :data => friendsActivities}
+        else
+            failure
+        end
+    end
+
+
     def failure
-        render :status => 401,
+        render :status => 200,
             :json => { :success => false,
                         :info => "user not signed in"}
     end

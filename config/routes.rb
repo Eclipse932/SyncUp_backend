@@ -28,6 +28,7 @@ Iter1::Application.routes.draw do
 
         get 'getFriends' => 'users#getFriends'
         post 'joinActivity' => 'users#joinActivity'
+        get 'getFriendsActivities' => 'users#getFriendsActivities'
         
       end 
     end
