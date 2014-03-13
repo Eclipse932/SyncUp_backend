@@ -246,7 +246,7 @@ class Api::V1::UsersController < ApplicationController
     def joinActivity 
         if current_user
             params.permit!
-            user_json = params[:activity] #activity contains the activity_id the user may want to join
+            user_json = params[:activity] #activity contains the activity_id and the end_time of the activity the user may want to join
             activity_id = user_json[:activity_id]
             activity= Activity.find_by(:id => activity_id)
 
@@ -257,7 +257,7 @@ class Api::V1::UsersController < ApplicationController
             end
 
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => activity.host_id, :status => ACCEPTED)
-            if friend 
+            if friend and DateTime.now <= user_json[:end_time]
                 atd = Attendee.find_by(:user_id => current_user.id, :activity_id => activity_id, :role => GUEST)
                 if atd.nil?
                     atd = Attendee.new(:user_id => current_user.id, :activity_id => activity_id, :role => GUEST)
