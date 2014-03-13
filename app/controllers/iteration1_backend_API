@@ -5,6 +5,7 @@ success is of type boolean. info is a string which gives more detailed informati
 
 Below only shows the return type of success request. On failure, success is false. info is the reason why the request failed.
 
+
 RegistrationController:
 post  http://base_url/api/vi/registrations
 To server:
@@ -34,7 +35,7 @@ From server:
 
 get http://base_url/api/vi/activities
 From server:
-{}
+{success, info, data(a list of activity records either the current user joins or hosts; incluse past and future activities)}
 
 post http://base_url/api/vi/requestFriend
 To server:
@@ -74,13 +75,13 @@ From server:
 
 post http://base_url/api/vi/joinActivity
 To server:
-{}
+{activity:{activity_id, end_time}} // end_time is the end_time for the activity
 From server:
-{}
+{success, info}
 
 get http://base_url/api/vi/getFriendsActivities
 From server:
-{}
+{success, info, data(a list of activity records which the current user's friends join or host; include past and future activities)}
 
 
 

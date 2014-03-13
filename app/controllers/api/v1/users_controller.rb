@@ -257,6 +257,7 @@ class Api::V1::UsersController < ApplicationController
             end
 
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => activity.host_id, :status => ACCEPTED)
+
             if friend and DateTime.now <= user_json[:end_time]
                 atd = Attendee.find_by(:user_id => current_user.id, :activity_id => activity_id, :role => GUEST)
                 if atd.nil?
@@ -290,14 +291,15 @@ class Api::V1::UsersController < ApplicationController
     def getFriendsActivities
         if current_user
             friends = Friendship.where(:user_id => current_user.id, :status => ACCEPTED).all
-            friendsActivities = Set.new
+            friendsActivitiesIds = Set.new
             friends.each do |friend|
-                friendsActivities += Attendee.where(:user_id => friend.friend_id).all
+                friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id).all).map(&:activity_id)
             end
+
              render :status => 200,
                             :json => { :success => true,
                                         :info => "get all friend activities"
-                                        :data => friendsActivities}
+                                        :data => Activity.where(:id => friendsActivitiesIds.to_a).all}
         else
             failure
         end
