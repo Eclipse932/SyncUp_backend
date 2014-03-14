@@ -26,9 +26,15 @@ class Api::V1::UsersController < ApplicationController
             
 			     end
             else 
-                 render :status => 200,
+                 if User.find_by(:id => friend_json[:friend_id])
+                    render :status => 200,
                        :json => { :success => true,
                                  :info => "already sent request"}
+                 else    
+                    render :status => 200,
+                       :json => { :success => false,
+                                 :info => "request friend not a valid user"}
+                 end
             end
 		else 
 			failure
