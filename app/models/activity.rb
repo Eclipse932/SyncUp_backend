@@ -3,20 +3,21 @@ class Activity < ActiveRecord::Base
 	has_many :attendees
 	has_many :users, through: :attendees
 
-	validate :start_time_is_valid_datetime
 
-	validate :end_time_is_valid_datetime
+	validate :start_must_be_before_end_time
 
-	def end_time_is_valid_datetime
-    	errors.add(:end_time, 'must be a valid datetime') if ((DateTime.parse(end_time) rescue ArgumentError) == ArgumentError)
- 	end
-
-  	def start_time_is_valid_datetime
-    	errors.add(:start_time, 'must be a valid datetime') if ((DateTime.parse(start_time) rescue ArgumentError) == ArgumentError)
-  	end
-
-
-	
+  	def start_must_be_before_end_time
+  		 
+  		if ((DateTime.parse(end_time) rescue ArgumentError) == ArgumentError)
+  			errors.add(:end_time, 'must be a valid datetime')
+  			
+  		elsif ((DateTime.parse(start_time) rescue ArgumentError) == ArgumentError)
+  			errors.add(:start_time, 'must be a valid datetime') 
+  			
+  		else start_time >= end_time
+    		errors.add(:start_time, "must be before end time") 
+    	end
+ 	end 
 
 
 	# def self.add(json)
