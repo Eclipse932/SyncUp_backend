@@ -10,7 +10,7 @@ class Api::V1::UsersController < ApplicationController
 			friend_json = params[:friendship] #friendship contains friend_id
             friend_json[:user_id] = current_user.id
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => friend_json[:friend_id])
-            if friend
+            if friend.nil? and User.find_by(:id => friend_json[:friend_id])
 			     friend = Friendship.new(friend_json)
                  friend.status = REQUESTED
 
@@ -87,10 +87,11 @@ class Api::V1::UsersController < ApplicationController
     def getFriends
         if current_user
             friend_list = Friendship.where(:user_id => current_user.id, :status => ACCEPTED).all
+            ids = friend_list.map(&:friend_id)
             render :status => 200,
                 :json => { :success => true,
                             :info => "get all friends",
-                            :data => friend_list}
+                            :data => User.where(:id => ids).all}
 
         else 
             failure
@@ -164,10 +165,11 @@ class Api::V1::UsersController < ApplicationController
     def getPendingFriends
         if current_user
             friend_list = Friendship.where(:user_id => current_user.id, :status => PENDING).all
+            ids = friend_list.map(&:friend_id)
             render :status => 200,
                 :json => { :success => true,
                             :info => "get pending friend requests",
-                            :data => friend_list}
+                            :data => User.where(:id => ids).all}
 
         else 
            failure
@@ -181,10 +183,11 @@ class Api::V1::UsersController < ApplicationController
     def getSentRequests
         if current_user
             friend_list = Friendship.where(:user_id => current_user.id, :status => REQUESTED).all
+            ids = friend_list.map(&:friend_id)
             render :status => 200,
                 :json => { :success => true,
                             :info => "get sent friend requests",
-                            :data => friend_list}
+                            :data => User.where(:id => ids).all}
 
         else 
             failure
