@@ -262,7 +262,7 @@ class Api::V1::UsersController < ApplicationController
 
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => activity.host_id, :status => ACCEPTED)
 
-            if friend and DateTime.now < user_json[:end_time]
+            if friend #and DateTime.now < user_json[:end_time]
                 atd = Attendee.find_by(:user_id => current_user.id, :activity_id => activity_id, :role => GUEST)
                 if atd.nil?
                     atd = Attendee.new(:user_id => current_user.id, :activity_id => activity_id, :role => GUEST)
