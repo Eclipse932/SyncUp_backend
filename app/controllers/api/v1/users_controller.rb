@@ -250,7 +250,8 @@ class Api::V1::UsersController < ApplicationController
             if current_user.id == activity.host_id
                 render :status => 200,
                             :json => { :success => true,
-                                        :info => "already joined activity as host"}) and return
+                                        :info => "already joined activity as host"}
+                return
             end
 
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => activity.host_id, :status => ACCEPTED)
