@@ -30,6 +30,8 @@ Iter1::Application.routes.draw do
         post 'joinActivity' => 'users#joinActivity'
         get 'getFriendsActivities' => 'users#getFriendsActivities'
         
+        post '/TESTAPI/reset' => 'users#resetFixture'
+        
       end 
     end
   end
