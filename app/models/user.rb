@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
 
 	def self.authenticate(ep)
     user = User.find_for_authentication(:email => ep[:email])
-    if user and user.valid_password?(ep[:password]) ? user : nil
+    if user and user.valid_password?(ep[:password])
     	user
     end
   end
