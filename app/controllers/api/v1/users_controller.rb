@@ -220,6 +220,9 @@ class Api::V1::UsersController < ApplicationController
 		           		:json => { :success => false,
 		                      	 :info => "activity relation failed to save"}
 		    	end
+		    	
+		    	else
+		    		failure
 		  	end
 		else
 			failure
