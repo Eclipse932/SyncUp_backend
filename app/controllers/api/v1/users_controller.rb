@@ -296,7 +296,7 @@ class Api::V1::UsersController < ApplicationController
 
              render :status => 200,
                             :json => { :success => true,
-                                        :info => "get all friend activities"
+                                        :info => "get all friend activities",
                                         :data => Activity.where(:id => friendsActivitiesIds.to_a).all}
         else
             failure
