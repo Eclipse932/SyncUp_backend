@@ -2,19 +2,19 @@ class User < ActiveRecord::Base
 	# Include default devise modules. Others available are:
 	# :confirmable, :lockable, :timeoutable and :omniauthable
 	before_save :ensure_authentication_token
-
+  validates_uniqueness_of :email
 
   devise :database_authenticatable, :registerable,
 				 :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :attendees
-  has_many :activities, through: :attendees
+  # has_many :attendees
+  # has_many :activities, through: :attendees
 
-  has_many :friends, :through => :friendships, :conditions => "status = " + ACCEPTED.to_s
-  has_many :starred_friends, :through => :friendships, :source => :friend, :conditions => "status = " + STARRED.to_s
-  has_many :requested_friends, :through => :friendships, :source => :friend, :conditions => "status = " + REQUESTED.to_s, :order => :created_at
-  has_many :pending_friends, :through => :friendships, :source => :friend, :conditions => "status = " + PENDING.to_s, :order => :created_at
-  has_many :friendships, :dependent => :destroy
+  # has_many :friends, :through => :friendships, :conditions => "status = " + ACCEPTED.to_s
+  # has_many :starred_friends, :through => :friendships, :source => :friend, :conditions => "status = " + STARRED.to_s
+  # has_many :requested_friends, :through => :friendships, :source => :friend, :conditions => "status = " + REQUESTED.to_s, :order => :created_at
+  # has_many :pending_friends, :through => :friendships, :source => :friend, :conditions => "status = " + PENDING.to_s, :order => :created_at
+  # has_many :friendships, :dependent => :destroy
 
 
   def ensure_authentication_token
@@ -37,6 +37,10 @@ class User < ActiveRecord::Base
     if user and user.valid_password?(ep[:password])
     	user
     end
+  end
+
+  def self.reset
+    User.delete_all
   end
 
 end
