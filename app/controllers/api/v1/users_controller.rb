@@ -248,7 +248,7 @@ class Api::V1::UsersController < ApplicationController
             activity= Activity.find_by(:id => activity_id)
 
             if current_user.id == activity.host_id
-                render (:status => 200,
+                render :status => 200,
                             :json => { :success => true,
                                         :info => "already joined activity as host"}) and return
             end
