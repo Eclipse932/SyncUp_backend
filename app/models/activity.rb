@@ -3,7 +3,7 @@ class Activity < ActiveRecord::Base
 	has_many :attendees
 	has_many :users, through: :attendees
 
-
+  validates_presence_of :name
 	#validate :start_must_be_before_end_time
 
   	#def start_must_be_before_end_time
