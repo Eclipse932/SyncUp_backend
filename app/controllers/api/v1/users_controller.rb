@@ -112,20 +112,20 @@ class Api::V1::UsersController < ApplicationController
             friend_json = params[:user] #user contains the friend name or friend id or friend email which the current user wants to search for 
             
             if friend_json[:name]
-                friend = User.where(:name => friend_json[:name]).all
+                friend = User.select("name, email, id, description").where(:name => friend_json[:name]).all
                 render :status => 200,
                     :json => { :success => true,
                             :info => "find user by name",
                             :data => friend}
             elsif friend_json[:id]
-                friend = User.find_by(:id => friend_json[:id])
+                friend = User.select("name, email, id, description").find_by(:id => friend_json[:id])
                 render :status => 200,
                     :json => { :success => true,
                             :info => "find user by id",
                             :data => [friend]}
 
             elsif friend_json[:email]
-                friend = User.find_by(:email => friend_json[:email])
+                friend = User.select("name, email, id, description").find_by(:email => friend_json[:email])
                 render :status => 200,
                     :json => { :success => true,
                             :info => "find user by email",
@@ -175,7 +175,7 @@ class Api::V1::UsersController < ApplicationController
             render :status => 200,
                 :json => { :success => true,
                             :info => "get pending friend requests",
-                            :data => User.where(:id => ids).all}
+                            :data => User.select("name, email, id, description").where(:id => ids).all}
 
         else 
            failure
@@ -193,7 +193,7 @@ class Api::V1::UsersController < ApplicationController
             render :status => 200,
                 :json => { :success => true,
                             :info => "get sent friend requests",
-                            :data => User.where(:id => ids).all}
+                            :data => (User.select("name, email, id, description").where(:id => ids).all)}
 
         else 
             failure
