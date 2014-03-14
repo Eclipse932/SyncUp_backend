@@ -48,7 +48,7 @@ To server:
 {friendship : {request_id, response}} request_id is the user_id which the current user accepts as friend; response is a boolean which indicates
                                       whether the request is accepted or not
 From server:
-{success, info, }
+{success, info}
 
 get http://base_url/api/vi/getPendingFriends
 From server:
