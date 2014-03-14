@@ -315,6 +315,16 @@ class Api::V1::UsersController < ApplicationController
             :json => { :success => false,
                         :info => "user not signed in"}
     end
+    
+    def resetFixture
+        User.delete_all
+        Activity.delete_all
+        Attendee.delete_all
+        Friendship.delete_all
+        render :status => 200,
+            :json => { :success => false,
+                        :info => "reset succeed"}
+    end
 
 	# def user_params
  #    params.require(:user).permit(:username, :email, :password, :salt, :encrypted_password)
