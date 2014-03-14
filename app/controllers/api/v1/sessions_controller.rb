@@ -16,7 +16,8 @@ class Api::V1::SessionsController < Devise::SessionsController
 	           :json => { :success => true,
 	                      :info => "Logged in",
 	                      :data => { :auth_token => current_user.authentication_token,
-                                   :email => current_user.email} }
+                                   :email => current_user.email,
+                                   :user => user} }
     else
     	failure
     end
