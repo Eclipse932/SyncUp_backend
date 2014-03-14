@@ -10,7 +10,7 @@ class Api::V1::UsersController < ApplicationController
 			friend_json = params[:friendship] #friendship contains friend_id
             friend_json[:user_id] = current_user.id
             friend = Friendship.find_by(:user_id => current_user.id, :friend_id => friend_json[:friend_id])
-            if friend
+            if friend.nil? and User.find_by(:id => friend_json[:friend_id])
 			     friend = Friendship.new(friend_json)
                  friend.status = REQUESTED
 
