@@ -29,6 +29,7 @@ Iter1::Application.routes.draw do
         get 'getFriends' => 'users#getFriends'
         post 'joinActivity' => 'users#joinActivity'
         get 'getFriendsActivities' => 'users#getFriendsActivities'
+        post 'getActivityAttendees' => 'users#getActivityAttendees'
         
         post '/TESTAPI/resetFixture' => 'users#resetFixture'
         post '/TESTAPI/unitTests' => 'users#unitTests'

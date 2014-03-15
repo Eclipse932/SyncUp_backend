@@ -97,7 +97,7 @@ class Api::V1::UsersController < ApplicationController
             render :status => 200,
                 :json => { :success => true,
                             :info => "get all friends",
-                            :data => User.where(:id => ids).all}
+                            :data => User.select("name, email, id, description").where(:id => ids).all}
 
         else 
             failure
@@ -227,7 +227,7 @@ class Api::V1::UsersController < ApplicationController
 		                      	 :info => "activity relation failed to save"}
 		    	end
 		    	
-		    	else
+		    else
 		    		failure
 		  	end
 		else
@@ -315,6 +315,9 @@ class Api::V1::UsersController < ApplicationController
         end
     end
 
+    #################################################
+    # utility functions                             #
+    #################################################
 
     def failure
         render :status => 200,
