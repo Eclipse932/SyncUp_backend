@@ -17,7 +17,8 @@ class Api::V1::SessionsController < Devise::SessionsController
 	                      :info => "Logged in",
 	                      :data => { :auth_token => current_user.authentication_token,
                                    :email => current_user.email,
-                                   :user => user} }
+                                   :user => user }}
+                                   # :user => Base64.encode64(open(user.avatar.path){ |io| io.read })} }
     else
     	failure
     end

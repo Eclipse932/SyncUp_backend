@@ -31,6 +31,4 @@ class UserTest < ActiveSupport::TestCase
 															:password => "p1"}), "Error Authentication"
 	end
 
-
-
 end

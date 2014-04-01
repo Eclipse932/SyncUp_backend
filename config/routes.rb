@@ -1,15 +1,47 @@
 Iter1::Application.routes.draw do
+  get "home/index"
   # resources :attendees
 
   # resources :friendships
 
-  # resources :activities
+  resources :activities
 
   devise_for :users
 
   root :to => "home#index"
   namespace :api do
     namespace :v1 do
+      devise_scope :user do
+        post 'registrations' => 'registrations#create', :as => 'register'
+        post 'sessions' => 'sessions#create', :as => 'login'
+        delete 'sessions' => 'sessions#destroy', :as => 'logout'
+        post 'activities' => 'users#createActivity'
+        get 'activities' => 'users#myActivities'
+
+        # added action routes for adding friends and confirm friends
+        post 'requestFriend' => 'users#requestFriend'
+        post 'confirmFriend' => 'users#confirmFriend'
+        get 'getPendingFriends' => 'users#getPendingFriends'
+        get 'getSentRequests' => 'users#getSentRequests'
+        post 'deleteRequest' => 'users#deleteRequest'
+
+        post 'searchUser' => 'users#searchUser'
+
+        get 'getFriends' => 'users#getFriends'
+        post 'joinActivity' => 'users#joinActivity'
+        get 'getFriendsActivities' => 'users#getFriendsActivities'
+        post 'getActivityAttendees' => 'users#getActivityAttendees'
+        
+        post '/TESTAPI/resetFixture' => 'users#resetFixture'
+        post '/TESTAPI/unitTests' => 'users#unitTests'
+        
+      end 
+    end
+  end
+
+
+  namespace :api do
+    namespace :v2 do
       devise_scope :user do
         post 'registrations' => 'registrations#create', :as => 'register'
         post 'sessions' => 'sessions#create', :as => 'login'

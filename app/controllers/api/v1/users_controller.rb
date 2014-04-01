@@ -97,7 +97,7 @@ class Api::V1::UsersController < ApplicationController
             render :status => 200,
                 :json => { :success => true,
                             :info => "get all friends",
-                            :data => User.select("name, email, id, description").where(:id => ids).all}
+                            :data => User.select("first_name, email, id, description").where(:id => ids).all}
 
         else 
             failure
@@ -111,21 +111,21 @@ class Api::V1::UsersController < ApplicationController
             params.permit!
             friend_json = params[:user] #user contains the friend name or friend id or friend email which the current user wants to search for 
             
-            if friend_json[:name]
-                friend = User.select("name, email, id, description").where(:name => friend_json[:name]).all
+            if friend_json[:first_name]
+                friend = User.select("first_name, email, id, description").where(:first_name => friend_json[:first_name]).all
                 render :status => 200,
                     :json => { :success => true,
                             :info => "find user by name",
                             :data => friend}
             elsif friend_json[:id]
-                friend = User.select("name, email, id, description").find_by(:id => friend_json[:id])
+                friend = User.select("first_name, email, id, description").find_by(:id => friend_json[:id])
                 render :status => 200,
                     :json => { :success => true,
                             :info => "find user by id",
                             :data => [friend]}
 
             elsif friend_json[:email]
-                friend = User.select("name, email, id, description").find_by(:email => friend_json[:email])
+                friend = User.select("first_name, email, id, description").find_by(:email => friend_json[:email])
                 render :status => 200,
                     :json => { :success => true,
                             :info => "find user by email",
@@ -175,7 +175,7 @@ class Api::V1::UsersController < ApplicationController
             render :status => 200,
                 :json => { :success => true,
                             :info => "get pending friend requests",
-                            :data => User.select("name, email, id, description").where(:id => ids).all}
+                            :data => User.select("first_name, email, id, description").where(:id => ids).all}
 
         else 
            failure
@@ -193,7 +193,7 @@ class Api::V1::UsersController < ApplicationController
             render :status => 200,
                 :json => { :success => true,
                             :info => "get sent friend requests",
-                            :data => (User.select("name, email, id, description").where(:id => ids).all)}
+                            :data => (User.select("first_name, email, id, description").where(:id => ids).all)}
 
         else 
             failure
@@ -348,9 +348,5 @@ class Api::V1::UsersController < ApplicationController
         render(:json=>{"nrFailed" => testInfo[2].split()[0].to_i, "output" => output,
             "totalTests" => testInfo[0].split()[0].to_i}, status:200)
     end
-
-	# def user_params
- #    params.require(:user).permit(:username, :email, :password, :salt, :encrypted_password)
- #  end
 
 end
