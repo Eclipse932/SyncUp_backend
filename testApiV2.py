@@ -107,7 +107,7 @@ class TestLoginSystem(testLib.RestTestCase):
 		email = respData['data']['email']
 		token = respData['data']['auth_token']
 		respData = self.makeRequest("/api/v2/activities?email=" + email + "&token=" + token, method="GET", data = {} )
-		self.assertResponse(respData, success = True, info = "activites!")
+		self.assertResponse(respData, success = True)
 
 
 	def testLogout(self):

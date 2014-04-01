@@ -26,21 +26,14 @@ class User < ActiveRecord::Base
 		end
 	end
  
-	private
-	
-	def generate_authentication_token
-		loop do
-			token = Devise.friendly_token
-			break token unless User.where(authentication_token: token).first
-		end
-	end
-
+ 
 	def self.authenticate(ep)
 		user = User.find_for_authentication(:email => ep[:email])
 		if user and user.valid_password?(ep[:password])
 			user
 		end
 	end
+	
 
 	def self.reset
 		User.delete_all
@@ -58,12 +51,20 @@ class User < ActiveRecord::Base
 	end
 
 
-
-
-
-
 	def user_params
 		params.require(:user).permit(:avatar)
 	end
+
+
+	private
+	
+	def generate_authentication_token
+		loop do
+			token = Devise.friendly_token
+			break token unless User.where(authentication_token: token).first
+		end
+	end
+
+
 
 end

@@ -19,11 +19,37 @@ class Activity < ActiveRecord::Base
     	#end
  	#end 
 
+  def self.visible?(user_id, act)
+    atd = Attendee.find_by(:user_id => user_id, :activity_id => act.id)
+    if atd and atd.role <= act.visibility
+      return true
+    end
 
-	# def self.add(json)
-	# 	params.permit!
-	# 	act = Activity.new(json)
-	# 	act.save
-	# 	act
-	# end
+    fds = Friendship.find_by(:user_id => act.host_id, :friend_id => user_id)
+    if fds.status <= act.visibility
+      return true
+    else
+      return false
+    end
+  end
+  
+
+	def self.add(act_json)
+    permitted = act_json.permit(:name, :status, :host_id, :location, :description, :visibility)
+    if permitted[:visibility] == nil
+      permitted[:visibility] = ACCEPTED
+    end
+		act = Activity.new(permitted)
+		if act.save
+      atd = Attendee.new(:user_id => act.host_id, :activity_id => act.id, :role => HOST)
+      if atd.save
+        return act
+      else
+        act.destroy
+      end
+    end
+
+    return nil
+	end
+
 end

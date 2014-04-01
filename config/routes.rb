@@ -1,15 +1,10 @@
 Iter1::Application.routes.draw do
   get "home/index"
-  # resources :attendees
-
-  # resources :friendships
-
-  resources :activities
-
+  root :to => "home#index"
   devise_for :users
 
-  root :to => "home#index"
   namespace :api do
+
     namespace :v1 do
       devise_scope :user do
         post 'registrations' => 'registrations#create', :as => 'register'
@@ -37,39 +32,40 @@ Iter1::Application.routes.draw do
         
       end 
     end
-  end
 
 
-  namespace :api do
     namespace :v2 do
       devise_scope :user do
-        post 'registrations' => 'registrations#create', :as => 'register'
-        post 'sessions' => 'sessions#create', :as => 'login'
-        delete 'sessions' => 'sessions#destroy', :as => 'logout'
-        post 'activities' => 'users#createActivity'
-        get 'activities' => 'users#myActivities'
-
-        # added action routes for adding friends and confirm friends
-        post 'requestFriend' => 'users#requestFriend'
-        post 'confirmFriend' => 'users#confirmFriend'
-        get 'getPendingFriends' => 'users#getPendingFriends'
-        get 'getSentRequests' => 'users#getSentRequests'
-        post 'deleteRequest' => 'users#deleteRequest'
 
         post 'searchUser' => 'users#searchUser'
-
-        get 'getFriends' => 'users#getFriends'
-        post 'joinActivity' => 'users#joinActivity'
-        get 'getFriendsActivities' => 'users#getFriendsActivities'
-        post 'getActivityAttendees' => 'users#getActivityAttendees'
-        
+        post 'registrations' => 'users#create', :as => 'register'
         post '/TESTAPI/resetFixture' => 'users#resetFixture'
         post '/TESTAPI/unitTests' => 'users#unitTests'
+
+        post 'sessions' => 'sessions#create', :as => 'login'
+        delete 'sessions' => 'sessions#destroy', :as => 'logout'
         
+        get 'activities' => 'activities#myActivities'
+        get 'getFriendsActivities' => 'activities#getFriendsActivities'
+        post 'activities' => 'activities#createActivity'
+        post 'joinActivity' => 'activities#joinActivity'
+        post 'getActivityAttendees' => 'activities#getActivityAttendees'
+        post 'inviteActivity' => 'activities#inviteActivity'
+        post 'confirmActivity' => 'activities#confirmActivity'
+        post 'getActivityAttendees' => 'activities#getActivityAttendees'
+
+        get 'getFriends' => 'friendships#getFriends'
+        get 'getPendingFriends' => 'friendships#getPendingFriends'
+        get 'getSentRequests' => 'friendships#getSentRequests'
+        post 'requestFriend' => 'friendships#requestFriend'
+        post 'confirmFriend' => 'friendships#confirmFriend'
+        post 'deleteRequest' => 'friendships#deleteRequest'
+
       end 
     end
+    
   end
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
