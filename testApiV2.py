@@ -289,8 +289,8 @@ class TestActivitySystem(testLib.RestTestCase):
 				assert dataType == "LIST"
 				if data:
 					for key in data:
-						valueList = [entry[key] for entry in respData['data']]
-						self.assertListEqual(data[key], valueList)
+						valueList = sorted([entry[key] for entry in respData['data']])
+						self.assertListEqual(sorted(data[key]), valueList)
 				else:
 					self.assertEqual(data, respData['data'])
 
