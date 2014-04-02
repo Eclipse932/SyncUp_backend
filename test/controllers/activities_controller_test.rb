@@ -4,6 +4,9 @@ class ActivitiesControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 	HOST = 1
 	GUEST= 2
+
+	STARRED = 1
+	ACCEPTED = 2
 	PENDING = 3
 	REQUESTED = 4
 
@@ -271,10 +274,184 @@ class ActivitiesControllerTest < ActionController::TestCase
 		
 	end
 
-		# assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => PENDING))
+
+	def test_getActivityAttendees_with_invalid_activity
+		puts "\nCalling test_getActivityAttendees_with_invalid_activity"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user2["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user1["activity"] = {"activity_id" => 12345845} 
+		post(:getActivityAttendees, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(false, parsed_body["success"])
+		assert_equal("activity not exists or not visible", parsed_body["info"])
+
+	end
 
 
+	def test_getActivityAttendees_with_valid_activity
+		puts "\nCalling test_getActivityAttendees_with_invalid_activity"
 
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user2["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user1["activity"] = {"activity_id" => act1.id} 
+		post(:getActivityAttendees, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [user1["id"], user2["id"], user3["id"]]}, parsed_body["data"])
+
+	end
+
+
+	def test_getFriendsActivities
+		puts "\nCalling test_getFriendsActivities"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user1["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		act2 = createActivity(user2["id"], "act2")
+		act3 = createActivity(user3["id"], "act3")
+		act4 = createActivity(user3["id"], "act4", :start_time => nil)
+		act5 = createActivity(user3["id"], "act5", :start_time => nil)
+		act6 = createActivity(user2["id"], "act6", :start_time => nil)
+
+
+		get(:getFriendsActivities, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [act1.id, act2.id, act3.id]}, parsed_body["data"])
+
+	end
+
+
+	def test_getFriendsActivities
+		puts "\nCalling test_getFriendsActivities"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user1["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		act2 = createActivity(user2["id"], "act2")
+		act3 = createActivity(user3["id"], "act3")
+		act4 = createActivity(user3["id"], "act4", :start_time => nil)
+		act5 = createActivity(user3["id"], "act5", :start_time => nil)
+		act6 = createActivity(user2["id"], "act6", :start_time => nil)
+
+
+		get(:getFriendsTodos, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [act4.id, act5.id, act6.id]}, parsed_body["data"])
+
+	end
+
+
+	def test_myUpcomingActivities
+		puts "\nCalling test_myUpcomingActivities"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+
+		act1 = createActivity(user1["id"], "act1")
+		act3 = createActivity(user1["id"], "act3", :start_time => "2014-05-14T05:31:14.976Z")
+		act4 = createActivity(user1["id"], "act4", :start_time => nil)
+
+		get(:myUpcomingActivities, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"])
+
+	end
+
+
+	def test_getActivity
+		puts "\nCalling test_getActivity"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+
+		act1 = createActivity(user1["id"], "act1")
+		act3 = createActivity(user1["id"], "act3", :start_time => "2014-05-14T05:31:14.976Z")
+		act4 = createActivity(user1["id"], "act4", :start_time => nil)
+
+		user1["activity_id"] = act1.id
+		user2["activity_id"] = act3.id
+
+		get(:getActivity, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"])
+
+		get(:getActivity, user2)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [act3.id]}, parsed_body["data"])
+
+	end
 
 
  	def createUser(email, first_name="", last_name="")
