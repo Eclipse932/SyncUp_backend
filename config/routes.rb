@@ -55,8 +55,10 @@ Iter1::Application.routes.draw do
 
     get 'upcomingActivities' => 'activities#myUpcomingActivities'
     get 'getActivity' => 'activities#getActivity'
-    get 'activities' => 'activities#myActivities'
-    get 'getFriendsActivities' => 'activities#getFriendsActivities'
+    get 'activities'  => 'activities#myActivities'
+    get 'todos'       => 'activities#myTodos'
+    get 'friendsActivities' => 'activities#getFriendsActivities'
+    get 'friendsTodos' => 'activities#getFriendsTodos'
     post 'activities' => 'activities#createActivity'
     post 'joinActivity' => 'activities#joinActivity'
     post 'getActivityAttendees' => 'activities#getActivityAttendees'
