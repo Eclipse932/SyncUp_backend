@@ -15,9 +15,9 @@ class ActivitiesController < ApplicationController
 
 
 	def myActivities
-		attendees = Attendee.where(:user_id => current_user.id).all
+		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
-		renderJSON(200, true, "get my activities", Activity.where(:id => ids).all )
+		renderJSON(200, true, "get my activities", Activity.where(:id => ids) )
 	end
 
 
@@ -27,8 +27,12 @@ class ActivitiesController < ApplicationController
 		activity_id = act_json[:activity_id]
 		activity= Activity.find_by(:id => activity_id)
 
+		if activity.nil?
+			renderJSON(200, false, "activity not valid") and return
+		end
+
 		if current_user.id == activity.host_id
-			renderJSON(200, true, "already joined activity as host")
+			renderJSON(200, true, "already joined activity as host") and return
 		end
 
 		friend = Friendship.find_by(:user_id => current_user.id, :friend_id => activity.host_id, :status => ACCEPTED)

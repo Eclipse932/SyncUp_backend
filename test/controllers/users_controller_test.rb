@@ -2,9 +2,8 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
 	include Devise::TestHelpers
-  # test "the truth" do
-  #   assert true
-  # end
+
+
   def test_create_with_empty_email
 		puts "\nCalling test_create_with_empty_email"
 
@@ -132,10 +131,10 @@ class UsersControllerTest < ActionController::TestCase
 		parsed_body = JSON.parse(response.body)
 		assert_json_list_contain({"email" => ['user1@example.com', 'user2@example.com']}, parsed_body["data"])
 
-		request_json['user'] = { 'first_name' => 'orange'}
+		request_json['user'] = { 'first_name' => 'apple', 'last_name' => 'juice'}
 		post(:searchUser, request_json)
 		parsed_body = JSON.parse(response.body)
-		assert_json_list_contain({"email" => ['user3@example.com']}, parsed_body["data"])
+		assert_json_list_contain({"email" => ['user2@example.com']}, parsed_body["data"])
 
 		request_json['user'] = { 'last_name' => 'juice'}
 		post(:searchUser, request_json)

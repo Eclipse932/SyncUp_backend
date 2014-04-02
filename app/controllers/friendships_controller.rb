@@ -66,7 +66,7 @@ class FriendshipsController < ApplicationController
 	def getFriends
         logger.info "HERE"
         logger.info current_user.id
-		friend_list = Friendship.where(:user_id => current_user.id, :status => ACCEPTED).all
+		friend_list = Friendship.where(:user_id => current_user.id, :status => ACCEPTED)
         logger.info friend_list
 		ids = friend_list.map(&:friend_id)
         logger.info ids
@@ -91,14 +91,14 @@ class FriendshipsController < ApplicationController
 
 
 	def getPendingFriends
-		friend_list = Friendship.where(:user_id => current_user.id, :status => PENDING).all
+		friend_list = Friendship.where(:user_id => current_user.id, :status => PENDING)
 		ids = friend_list.map(&:friend_id)
 		renderJSON(200, true, "get pending friend requests", User.findUser(:id => ids))
 	end
 
 
 	def getSentRequests
-		friend_list = Friendship.where(:user_id => current_user.id, :status => REQUESTED).all
+		friend_list = Friendship.where(:user_id => current_user.id, :status => REQUESTED)
 		ids = friend_list.map(&:friend_id)
 		renderJSON(200, true, "get sent friend requests", User.findUser(:id => ids))
 	end
