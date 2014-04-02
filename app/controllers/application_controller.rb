@@ -28,9 +28,7 @@ class ApplicationController < ActionController::Base
 		if user && Devise.secure_compare(user.authentication_token, params[:token])
 			sign_in user, store: false
 		else
-			render :status => 200,
-					:json => { :success => false,
-											:info => "please sign in first"}
+			renderJSON(200, false, "please sign in first") and return
 		end
 	end
 

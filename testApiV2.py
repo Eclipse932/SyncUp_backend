@@ -308,11 +308,13 @@ class TestActivitySystem(testLib.RestTestCase):
 		return user
 
 
-	def createActivity(self, user, name='', location=None, description=None, visibility=1):
+	def createActivity(self, user, name='', location=None, description=None, visibility=2):
 		respData = self.makeRequest("/activities" + user['url'], method="POST", data = { 'activity' : { 'name': name,
+																										'start_time': '2014-04-02T21:05:03.027Z',
 																											   'location': location,
 																											   'description': description,
 																											   'visibility': visibility}} )
+		# print respData
 		self.assertResponse(respData, success = True, data = { 'host_id' : user['id'],
 															   'name' : name,
 															   'location' : location,
@@ -362,15 +364,15 @@ class TestActivitySystem(testLib.RestTestCase):
 		act3 = self.createActivity(user3, name='user3act', location='location3', description='description3')
 
 
-		respData = self.makeRequest("/getFriendsActivities" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/friendsActivities" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user2['id'], user3['id']],
 															   'name' : [act2['name'], act3['name']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/getFriendsActivities" + user2['url'], method="GET", data = {} )
+		respData = self.makeRequest("/friendsActivities" + user2['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user1['id']],
 															   'name' : [act1['name']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/getFriendsActivities" + user3['url'], method="GET", data = {} )
+		respData = self.makeRequest("/friendsActivities" + user3['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user1['id']],
 															   'name' : [act1['name']]}, dataType = "LIST")
 
