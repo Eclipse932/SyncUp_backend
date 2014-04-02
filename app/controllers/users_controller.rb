@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-	skip_before_filter :authenticate_user_from_token!, :only => [:create, :resetFixture, :unitTests]
+	skip_before_filter :authenticate_user_from_token!, :only => [:create]
 	respond_to :json
 
 
@@ -46,34 +46,31 @@ class UsersController < ApplicationController
 
 	def updateMyProfile
 		permitted = params.require(:user).permit(:first_name, :last_name, :description)
-		if User.update(current_user.id, permitted)
-			renderJSON(200, true, "profile updated")
-		else
-			renderJSON(200, false, "profile failed to update")
-		end
+		User.update(current_user.id, permitted)
+		renderJSON(200, true, "profile updated")
 	end
 
 
-	def resetFixture
-		User.delete_all
-		Activity.delete_all
-		Attendee.delete_all
-		Friendship.delete_all
-		renderJSON(200, true, "reset succeed")
-	end
+	# def resetFixture
+	# 	User.delete_all
+	# 	Activity.delete_all
+	# 	Attendee.delete_all
+	# 	Friendship.delete_all
+	# 	renderJSON(200, true, "reset succeed")
+	# end
 
 
-	def unitTests
-		if Rails.env == "production"
-			output = `RAILS_ENV=development ruby -Itest test/models/user_test.rb`
-		else
-			output = `ruby -Itest test/models/user_test.rb`
-		end
-		logger.debug output
-		testInfo = output.split(/\n/)
-		testInfo = testInfo[-1].split(", ")
-		render(:json=>{"nrFailed" => testInfo[2].split()[0].to_i, "output" => output,
-				"totalTests" => testInfo[0].split()[0].to_i}, status:200)
-	end
+	# def unitTests
+	# 	if Rails.env == "production"
+	# 		output = `RAILS_ENV=development ruby -Itest test/models/user_test.rb`
+	# 	else
+	# 		output = `ruby -Itest test/models/user_test.rb`
+	# 	end
+	# 	logger.debug output
+	# 	testInfo = output.split(/\n/)
+	# 	testInfo = testInfo[-1].split(", ")
+	# 	render(:json=>{"nrFailed" => testInfo[2].split()[0].to_i, "output" => output,
+	# 			"totalTests" => testInfo[0].split()[0].to_i}, status:200)
+	# end
 
 end
