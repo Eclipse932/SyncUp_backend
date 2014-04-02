@@ -71,6 +71,6 @@ class UsersController < ApplicationController
 	# 	testInfo = testInfo[-1].split(", ")
 	# 	render(:json=>{"nrFailed" => testInfo[2].split()[0].to_i, "output" => output,
 	# 			"totalTests" => testInfo[0].split()[0].to_i}, status:200)
-	# end
+	end
 
 end

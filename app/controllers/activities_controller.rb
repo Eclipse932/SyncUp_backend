@@ -79,15 +79,15 @@ class ActivitiesController < ApplicationController
 
 
 	def confirmActivity
-		permitted = params.require(:attendee).permit(:user_id, :activity_id, :response)
-
-		if permitted[:response] == nil
+		permitted = params.require(:attendee).permit(:user_id, :activity_id)
+		response = params[:attendee][:response]
+		if response == nil
 			renderJSON(200, false, "please specify response") and return 
 		end
 
 		atd = Attendee.find_by(permitted)
 		if atd and atd.role == PENDING
-			if permitted[:response]
+			if response
 				atd.role = GUEST
 				atd.save
 				renderJSON(200, true, "confirm to attend activity")

@@ -205,6 +205,71 @@ class ActivitiesControllerTest < ActionController::TestCase
 	end
 
 
+	def test_confirmActivity_with_invalid_request
+		puts "\nCalling test_confirmActivity_with_invalid_request"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => PENDING)
+		assert_not_nil(atd.save)
+
+		user2["attendee"] = {"user_id" => user1["id"], "activity_id" => act1.id}
+		post(:confirmActivity, user2)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(false, parsed_body["success"])
+		assert_equal("please specify response", parsed_body["info"])
+	end
+
+
+	def test_confirmActivity_with_yes_response
+		puts "\nCalling test_confirmActivity_with_yes_response"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => PENDING)
+		assert_not_nil(atd.save)
+
+		user2["attendee"] = {"user_id" => user2["id"], "activity_id" => act1.id, "response" => true}
+		post(:confirmActivity, user2)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST))
+
+	end
+
+	def test_confirmActivity_with_no_response
+		puts "\nCalling test_confirmActivity_with_no_response"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => PENDING)
+		assert_not_nil(atd.save)
+
+		user2["attendee"] = {"user_id" => user2["id"], "activity_id" => act1.id, "response" => false}
+		post(:confirmActivity, user2)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id))
+		
+	end
 
 		# assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => PENDING))
 
