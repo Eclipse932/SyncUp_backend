@@ -1,4 +1,5 @@
 class ActivitiesController < ApplicationController
+
 	def createActivity
 		params.permit!
 		act_json = params[:activity]
@@ -21,9 +22,9 @@ class ActivitiesController < ApplicationController
 	end
 
 	def myTodos
-		attendees = Attendee.where(:user_id => current_user.id).all
+		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
-		renderJSON(200, true, "get my activities", Activity.where(:id => ids, :start_time => nil).all )
+		renderJSON(200, true, "get my activities", Activity.where(:id => ids, :start_time => nil) )
 	end
 
 	def joinActivity 
@@ -62,19 +63,23 @@ class ActivitiesController < ApplicationController
 
 
 	def inviteActivity
-		permitted = params.permit(:user_id, :activity_id)
+		permitted = params.require(:attendee).permit(:user_id, :activity_id)
 		permitted[:role] = PENDING
-		atd = Attendee.new(permitted)
-		if atd.save
-			renderJSON(200, true, "invitation sent")
+		if Attendee.find_by(:user_id => current_user.id, :activity_id => permitted[:activity_id], :role => HOST)
+			atd = Attendee.new(permitted)
+			if atd.save
+				renderJSON(200, true, "invitation sent")
+			else
+				renderJSON(200, true, "user already involved in the activity")
+			end
 		else
-			renderJSON(200, true, "user already involved in the activity")
+			renderJSON(200, false, "don't have right to invite")
 		end
 	end
 
 
 	def confirmActivity
-		permitted = params.permit(:user_id, :activity_id, :response)
+		permitted = params.require(:attendee).permit(:user_id, :activity_id, :response)
 
 		if permitted[:response] == nil
 			renderJSON(200, false, "please specify response") and return 
