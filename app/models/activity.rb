@@ -20,6 +20,7 @@ class Activity < ActiveRecord::Base
  	#end 
 
   def self.visible?(user_id, act)
+    logger.info "HERE"
     atd = Attendee.find_by(:user_id => user_id, :activity_id => act.id)
     if atd and atd.role <= act.visibility
       return true
