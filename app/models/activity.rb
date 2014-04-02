@@ -27,7 +27,7 @@ class Activity < ActiveRecord::Base
     end
 
     fds = Friendship.find_by(:user_id => act.host_id, :friend_id => user_id)
-    if fds.status <= act.visibility
+    if fds and fds.status <= act.visibility
       return true
     else
       return false

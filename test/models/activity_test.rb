@@ -10,14 +10,14 @@ class ActivityTest < ActiveSupport::TestCase
   	assert !activity.save, "activity must have a name"
   end
 
-  test "test activity visibility for friends1" do
+  test "test activity visibility for friends" do
   Friendship.delete_all
   Activity.delete_all
-  	friendship1 = Friendship.new(:user_id => 11, :friend_id => 12, :status => 2)
+  	friendship1 = Friendship.new(:user_id => 11, :friend_id => 12, :status => ACCEPTED)
   	assert friendship1.save, "adding friendship1 relation failed"
-  	friendship2 = Friendship.new(:user_id => 12, :friend_id => 11, :status => 2)
+  	friendship2 = Friendship.new(:user_id => 12, :friend_id => 11, :status => ACCEPTED)
   	assert friendship2.save, "adding friendship2 relation failed"
-  	activity = Activity.new(:name => "poker face!", :host_id => 12, :visibility => 2)
+  	activity = Activity.new(:name => "poker face!", :host_id => 12, :visibility => ACCEPTED)
   	assert activity.save, "adding activity failed"
   	assert Activity.visible?(11, activity), "accepted friends should be able to see activities hosted by each other with default actvity visibility"
 
@@ -26,7 +26,7 @@ class ActivityTest < ActiveSupport::TestCase
   test "test activity visibility for attendee" do
   Activity.delete_all
   Attendee.delete_all
-    activity = Activity.new(:name => "poker face!", :host_id => 12, :visibility => 2)
+    activity = Activity.new(:name => "poker face!", :host_id => 12, :visibility => ACCEPTED)
   	assert activity.save, "adding activity failed"
   	user1 = Attendee.new(:user_id => 11, :activity_id => activity.id, :role => GUEST)
   	assert user1.save, "adding user1 failed"
@@ -35,6 +35,28 @@ class ActivityTest < ActiveSupport::TestCase
   	assert Activity.visible?(11, activity), "activity attendee should be able to see activities under default visibility"
   	assert Activity.visible?(12, activity), "activity host should be able to see activities under default visibility"
   end
+
+
+  test "invisible activity for people who are not event attendee and friends with host" do
+  Activity.delete_all
+  Attendee.delete_all
+  Friendship.delete_all
+  	activity = Activity.new(:name => "poker face!", :host_id => 12, :visibility => ACCEPTED)
+  	assert activity.save, "adding activity failed"
+  	assert !Activity.visible?(14, activity), "people who are not event attendee and friends with host should not be able to see the event under default visibility"
+
+
+  	friendship1 = Friendship.new(:user_id => 11, :friend_id => 12, :status => REQUESTED)
+  	assert friendship1.save, "adding friendship1 relation failed"
+  	friendship2 = Friendship.new(:user_id => 12, :friend_id => 11, :status => PENDING)
+  	assert friendship2.save, "adding friendship2 relation failed"
+  	assert !Activity.visible?(11, activity), "people who are not event attendee and pending friends with host should not be able to see the event under default visibility"
+
+  end
+
+
+
+  
 
   test "adding activity1" do 
   Activity.delete_all

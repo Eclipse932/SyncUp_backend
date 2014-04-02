@@ -6,4 +6,6 @@ class Friendship < ActiveRecord::Base
 	# 	Friendship.find_by(:user_id => user_id, :friend_id => friend_id)
 	# end
 	
+	validates_presence_of :user_id
+	validates_presence_of :friend_id
 end
