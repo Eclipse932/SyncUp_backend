@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-	skip_before_filter :authenticate_user_from_token!, :except => [:searchUser]
+	skip_before_filter :authenticate_user_from_token!, :only => [:create, :resetFixture, :unitTests]
 	respond_to :json
 
 

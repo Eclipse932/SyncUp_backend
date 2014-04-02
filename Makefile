@@ -66,7 +66,7 @@ post_package:
 start_local: 
 	foreman start
 
-HEROKU_APP=serene-meadow-7552
+HEROKU_APP=apple-shortcake-8878
 
 # Since this file lives in a directory of a bigger git repository, we cannot 
 # just push the whole repo (Heroku will not find the necessary files at top-level)
