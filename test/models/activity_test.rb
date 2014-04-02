@@ -36,6 +36,33 @@ class ActivityTest < ActiveSupport::TestCase
   	assert Activity.visible?(12, activity), "activity host should be able to see activities under default visibility"
   end
 
+  test "adding activity1" do 
+  Activity.delete_all
+  Attendee.delete_all
+   	activity = Activity.add({"name" => "poker face!", "host_id" => 14})
+   	if activity
+   		assert_equal(ACCEPTED, activity.visibility, "default visibility should be ACCEPTED")
+   		attendee = Attendee.find_by(:user_id => 14)
+   		assert_equal(activity.id, attendee.activity_id, "should update the attendee table")
+   		assert_equal(HOST, attendee.role, "should add the attendee as host")
+   	end
+  end 
+
+  test "adding activity2" do
+  Activity.delete_all
+  Attendee.delete_all
+  		activity = Activity.add({"host_id" => 14})
+  		assert_nil(activity, "save the activity with no name ")
+
+  end 
+
+  test "adding activity3" do
+  Activity.delete_all
+  Attendee.delete_all
+  		activity = Activity.add({"name" => "poker face!"})
+  		assert_nil(activity, "save the activity with no host")
+
+  end 
   
 
 end
