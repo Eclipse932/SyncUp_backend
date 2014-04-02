@@ -9,6 +9,9 @@ class UsersController < ApplicationController
     																				 :password, :password_confirmation)
     user = User.new(permitted)
     if user.save
+    	if user == nil
+    		puts "wtf is this nil"
+    	end
       sign_in user
       render :status => 200,
            :json => { :success => true,
@@ -29,6 +32,25 @@ class UsersController < ApplicationController
 		permitted = params.require(:user).permit(:id, :email, :first_name, :last_name)
 		users = User.findUser(permitted)
 		renderJSON(200, true, "get users", users)
+	end
+
+
+	def getMyProfile
+		user = User.select("first_name, last_name, email, id, description, last_sign_in_at").find(current_user.id)
+
+		if current_user.avatar.exists?
+			user[:avatar] = Base64.encode64(open(current_user.avatar.path(:thumbnail)){ |io| io.read })
+		end
+		renderJSON(200, true, "get my profile", user)
+	end
+
+	def updateMyProfile
+		permitted = params.require(:user).permit(:first_name, :last_name, :description)
+		if User.update(current_user.id, permitted)
+			renderJSON(200, true, "profile updated")
+		else
+			renderJSON(200, false, "profile failed to update")
+		end
 	end
 
 

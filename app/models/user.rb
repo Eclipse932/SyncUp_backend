@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
 
 
 	def self.findUser(userJSON)
-		users = User.select("first_name, last_name, email, id, description").where(userJSON).all
+		users = User.select("first_name, last_name, email, id, description").where(userJSON)
 		users.each do |user|
 			if user.avatar.exists?
 				user[:avatar] = Base64.encode64(open(user.avatar.path(:thumbnail)){ |io| io.read })

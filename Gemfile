@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
 
-
+group :development, :test do
+  gem 'rspec-rails'
+end
 
 group :production do
   gem 'pg'
