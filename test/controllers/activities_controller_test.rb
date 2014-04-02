@@ -38,23 +38,50 @@ class ActivitiesControllerTest < ActionController::TestCase
 		puts "\nCalling test_myActivities"
 
 		user1 = createUser('user1@example.com', 'apple', 'pie')
+		act1 = createActivity(user1["id"], "act1", :start_time => nil)
 		get(:myActivities, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
 		assert_equal([], parsed_body["data"])
 
-		act1 = createActivity(user1["id"], "act1")
+		act2 = createActivity(user1["id"], "act2")
 		get(:myActivities, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({'id' => [act1.id]}, parsed_body["data"])
+		assert_json_list_contain({'id' => [act2.id]}, parsed_body["data"])
+
+		act3 = createActivity(user1["id"], "act3")
+		act4 = createActivity(user1["id"], "act4")
+		get(:myActivities, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({'id' => [act2.id, act3.id, act4.id]}, parsed_body["data"])
+
+	end
+
+
+	def test_myTodos
+		puts "\nCalling test_myTodos"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		act1 = createActivity(user1["id"], "act1", :start_time => nil)
+		get(:myActivities, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_equal([], parsed_body["data"])
 
 		act2 = createActivity(user1["id"], "act2")
-		act3 = createActivity(user1["id"], "act3")
 		get(:myActivities, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({'id' => [act1.id, act2.id, act3.id]}, parsed_body["data"])
+		assert_json_list_contain({'id' => [act2.id]}, parsed_body["data"])
+
+		act3 = createActivity(user1["id"], "act3")
+		act4 = createActivity(user1["id"], "act4")
+		get(:myActivities, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({'id' => [act2.id, act3.id, act4.id]}, parsed_body["data"])
 
 	end
 
@@ -113,10 +140,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 	end
 
 
-		# assert_not_nil(Friendship.find_by(:user_id => user1["id"], :friend_id => user2["id"], :status => REQUESTED))
-		# assert_not_nil(Friendship.find_by(:user_id => user2["id"], :friend_id => user1["id"], :status => PENDING))
-		# act = createActivity(user1["id"], "example_act")
-		# puts act.start_time
+
 
  	def createUser(email, first_name="", last_name="")
 		user = User.new(:email => email, :password => 'password', :password_confirmation => 'password',
