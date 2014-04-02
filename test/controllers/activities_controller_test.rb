@@ -65,23 +65,23 @@ class ActivitiesControllerTest < ActionController::TestCase
 
 		user1 = createUser('user1@example.com', 'apple', 'pie')
 		act1 = createActivity(user1["id"], "act1", :start_time => nil)
-		get(:myActivities, user1)
+		get(:myTodos, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_equal([], parsed_body["data"])
+		assert_json_list_contain({'id' => [act1.id]}, parsed_body["data"])
 
 		act2 = createActivity(user1["id"], "act2")
-		get(:myActivities, user1)
+		get(:myTodos, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({'id' => [act2.id]}, parsed_body["data"])
+		assert_json_list_contain({'id' => [act1.id]}, parsed_body["data"])
 
-		act3 = createActivity(user1["id"], "act3")
-		act4 = createActivity(user1["id"], "act4")
-		get(:myActivities, user1)
+		act3 = createActivity(user1["id"], "act3", :start_time => nil)
+		act4 = createActivity(user1["id"], "act4", :start_time => nil)
+		get(:myTodos, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({'id' => [act2.id, act3.id, act4.id]}, parsed_body["data"])
+		assert_json_list_contain({'id' => [act1.id, act3.id, act4.id]}, parsed_body["data"])
 
 	end
 
@@ -138,6 +138,76 @@ class ActivitiesControllerTest < ActionController::TestCase
 		assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST))
 
 	end
+
+
+	def test_inviteActivity_with_already_joined_user
+		puts "\nCalling test_inviteActivity_with_already_joined_user"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user1["attendee"] = {"user_id" => user2["id"], "activity_id" => act1.id}
+		post(:inviteActivity, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_equal("user already involved in the activity", parsed_body["info"])
+	end
+
+
+	def test_inviteActivity_with_not_host
+		puts "\nCalling test_inviteActivity_with_not_host"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user2["attendee"] = {"user_id" => user1["id"], "activity_id" => act1.id}
+		post(:inviteActivity, user2)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(false, parsed_body["success"])
+		assert_equal("don't have right to invite", parsed_body["info"])
+	end
+
+
+	def test_inviteActivity_with_valid_invite
+		puts "\nCalling test_inviteActivity_with_valid_invite"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		act1 = createActivity(user1["id"], "act1")
+
+		user1["attendee"] = {"user_id" => user2["id"], "activity_id" => act1.id}
+		post(:inviteActivity, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_equal("invitation sent", parsed_body["info"])
+		assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => PENDING))
+	end
+
+
+
+		# assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => PENDING))
+
 
 
 
