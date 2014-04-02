@@ -337,8 +337,8 @@ class ActivitiesControllerTest < ActionController::TestCase
 	end
 
 
-	def test_getFriendsActivities
-		puts "\nCalling test_getFriendsActivities"
+	def test_getFriendsActivities_1
+		puts "\nCalling test_getFriendsActivities_1"
 
 		user1 = createUser('user1@example.com', 'apple', 'pie')
 		user2 = createUser('user2@example.com', 'apple', 'juice')
@@ -370,6 +370,41 @@ class ActivitiesControllerTest < ActionController::TestCase
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
 		assert_json_list_contain({"id" => [act1.id, act2.id, act3.id]}, parsed_body["data"])
+
+	end
+
+
+	def test_getFriendsActivities_2
+		puts "\nCalling test_getFriendsActivities_2"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user1["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		act2 = createActivity(user2["id"], "act2")
+		act3 = createActivity(user3["id"], "act3")
+		act4 = createActivity(user3["id"], "act4", :start_time => nil)
+		act5 = createActivity(user3["id"], "act5", :start_time => nil)
+		act6 = createActivity(user2["id"], "act6", :start_time => nil)
+		get(:getFriendsActivities, user2)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"])
 
 	end
 
