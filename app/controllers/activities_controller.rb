@@ -17,6 +17,7 @@ class ActivitiesController < ApplicationController
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
 		renderJSON(200, true, "get my activities", Activity.where("start_time IS NOT NULL").where(:id => ids) )
+
 	end
 
 	def myTodos

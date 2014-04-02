@@ -36,7 +36,7 @@ class Activity < ActiveRecord::Base
   
 
 	def self.add(act_json)
-    permitted = act_json.permit(:name, :status, :host_id, :location, :description, :visibility)
+    permitted = act_json.permit(:name, :status, :host_id, :location, :description, :visibility, :start_time, :end_time)
     if permitted[:visibility] == nil
       permitted[:visibility] = ACCEPTED
     end
