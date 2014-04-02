@@ -428,8 +428,8 @@ class ActivitiesControllerTest < ActionController::TestCase
 	end
 
 
-	def test_getActivity
-		puts "\nCalling test_getActivity"
+	def test_getActivity_with_host
+		puts "\nCalling test_getActivity_with_host"
 
 		user1 = createUser('user1@example.com', 'apple', 'pie')
 		user2 = createUser('user2@example.com', 'apple', 'juice')
@@ -445,6 +445,22 @@ class ActivitiesControllerTest < ActionController::TestCase
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
 		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"])
+
+	end
+
+
+	def test_getActivity_with_guest
+		puts "\nCalling test_getActivity_with_guest"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+
+		act1 = createActivity(user1["id"], "act1")
+		act3 = createActivity(user1["id"], "act3", :start_time => "2014-05-14T05:31:14.976Z")
+		act4 = createActivity(user1["id"], "act4", :start_time => nil)
+
+		user1["activity_id"] = act1.id
+		user2["activity_id"] = act3.id
 
 		get(:getActivity, user2)
 		parsed_body = JSON.parse(response.body)
