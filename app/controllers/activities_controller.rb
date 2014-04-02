@@ -105,7 +105,7 @@ class ActivitiesController < ApplicationController
         logger.info current_user.id
         logger.info act
 		if act and Activity.visible?(current_user.id, act)
-			attendee_list = Attendee.where(:activity_id => act.id, :status => GUEST).all
+			attendee_list = Attendee.where(:activity_id => act.id, :role => GUEST).all
 			ids = attendee_list.map(&:user_id)
 			ids += [act.host_id]
 			renderJSON(200, true, "get all attendees", User.findUser(:id => ids))
