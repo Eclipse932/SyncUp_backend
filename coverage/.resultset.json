@@ -1,7 +1,7 @@
 {
   "Unit Tests": {
     "coverage": {
-      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/models/user.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/user.rb": [
         1,
         null,
         null,
@@ -73,7 +73,7 @@
         null,
         null
       ],
-      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/models/activity.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/activity.rb": [
         1,
         null,
         null,
@@ -130,14 +130,14 @@
         null,
         null
       ],
-      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/models/attendee.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/attendee.rb": [
         1,
         null,
         1,
         null,
         null
       ],
-      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/models/friendship.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/friendship.rb": [
         1,
         null,
         null,
@@ -149,6 +149,6 @@
         null
       ]
     },
-    "timestamp": 1396406631
+    "timestamp": 1396420292
   }
 }
