@@ -64,8 +64,12 @@ class FriendshipsController < ApplicationController
 
 
 	def getFriends
+        logger.info "HERE"
+        logger.info current_user.id
 		friend_list = Friendship.where(:user_id => current_user.id, :status => ACCEPTED).all
+        logger.info friend_list
 		ids = friend_list.map(&:friend_id)
+        logger.info ids
 		renderJSON(200, true, "get all friends", User.findUser(:id => ids))
 	end
 
