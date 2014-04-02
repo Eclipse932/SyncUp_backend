@@ -12,6 +12,9 @@ Iter1::Application.routes.draw do
         delete 'sessions' => 'sessions#destroy', :as => 'logout'
         post 'activities' => 'users#createActivity'
         get 'activities' => 'users#myActivities'
+        get 'upcomingActivities' => 'users#myUpcomingActivities'
+
+        get 'getActivity' => 'users#getActivity'
 
         # added action routes for adding friends and confirm friends
         post 'requestFriend' => 'users#requestFriend'

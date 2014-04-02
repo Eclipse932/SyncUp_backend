@@ -237,6 +237,21 @@ class Api::V1::UsersController < ApplicationController
 	end
 
 
+    def myUpcomingActivities
+        if current_user
+            attendees = Attendee.where(:user_id => current_user.id).all
+		    ids = attendees.map(&:activity_id)
+            render :status => 200,
+            :json => {
+                      :success => true,
+                      :info => "activities!",
+                      :data => Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month).all
+                     }
+        else
+            failure
+        end
+    end
+
 
 	def myActivities
 		if current_user
@@ -251,6 +266,32 @@ class Api::V1::UsersController < ApplicationController
             failure
         end
 	end
+    
+    def getActivity
+        if current_user
+            params.permit!
+            activity_id = params[:activity_id]
+            activity = Activity.find_by(:id => activity_id)
+            
+            puts activity
+            isHost = false
+            if current_user.id == activity.host_id
+                isHost = true
+            end
+
+            if isHost
+                render :status => 200, :json => {:success => true,
+                                                 :info => {:is_host => true},
+                                                 :data => Activity.where(:id => activity_id) }
+            else
+                render :status => 200, :json => {:success => true,
+                                                 :info => {:is_host => false},
+                                                 :data => Activity.where(:id => activity_id) }
+            end
+        else
+            failure
+        end
+    end
 
     def joinActivity 
         if current_user
