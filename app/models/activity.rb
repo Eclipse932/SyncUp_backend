@@ -1,6 +1,6 @@
 class Activity < ActiveRecord::Base
 
-	# has_many :attendees
+	#has_many :attendees
 	# has_many :users, through: :attendees
 
   validates_presence_of :name
