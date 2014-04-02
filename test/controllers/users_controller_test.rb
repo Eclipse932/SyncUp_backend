@@ -80,28 +80,68 @@ class UsersControllerTest < ActionController::TestCase
 	end
 
 
-	def test_searchUser
-		puts "\nCalling test_searchUser"
+	def test_getMyProfile
+		puts "\nCalling test_getMyProfile"
 
 		request_json = createUser('user1@example.com', 'apple', 'pie')
-		request_json['user'] = { 'email' => 'user1@example.com'}
-		post(:searchUser, request_json)
+		get(:getMyProfile, request_json)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
+		assert_equal('apple', parsed_body["data"]["first_name"])
+		assert_equal('pie', parsed_body["data"]["last_name"])
+		assert_equal('user1@example.com', parsed_body["data"]["email"])
+
+	end
+
+	def test_updateMyProfile
+		puts "\nCalling test_updateMyProfile"
+
+		request_json = createUser('user1@example.com', 'apple', 'pie')
 
 		get(:getMyProfile, request_json)
-		puts response.body
+		parsed_body = JSON.parse(response.body)
+		assert_equal(nil, parsed_body["data"]["description"])
+
 		request_json['user'] = { 'description' => 'this is an example user' }
 		post(:updateMyProfile, request_json)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		
+
 		get(:getMyProfile, request_json)
-		puts response.body
+		parsed_body = JSON.parse(response.body)
+		assert_equal('this is an example user', parsed_body["data"]["description"])
 
 	end
 
 
+	def test_searchUser
+		puts "\nCalling test_searchUser"
+
+		request_json = createUser('user1@example.com', 'apple', 'pie')
+		createUser('user2@example.com', 'apple', 'juice')
+		createUser('user3@example.com', 'orange', 'juice')
+		createUser('user4@example.com', 'chocolate', 'shake')
+
+		request_json['user'] = { 'email' => 'user4@example.com'}
+		post(:searchUser, request_json)
+		parsed_body = JSON.parse(response.body)
+		assert_json_list_contain({"email" => ['user4@example.com']}, parsed_body["data"])
+
+		request_json['user'] = { 'first_name' => 'apple'}
+		post(:searchUser, request_json)
+		parsed_body = JSON.parse(response.body)
+		assert_json_list_contain({"email" => ['user1@example.com', 'user2@example.com']}, parsed_body["data"])
+
+		request_json['user'] = { 'first_name' => 'orange'}
+		post(:searchUser, request_json)
+		parsed_body = JSON.parse(response.body)
+		assert_json_list_contain({"email" => ['user3@example.com']}, parsed_body["data"])
+
+		request_json['user'] = { 'last_name' => 'juice'}
+		post(:searchUser, request_json)
+		parsed_body = JSON.parse(response.body)
+		assert_json_list_contain({"email" => ['user2@example.com', 'user3@example.com']}, parsed_body["data"])
+	end
 
 
 
@@ -111,6 +151,20 @@ class UsersControllerTest < ActionController::TestCase
 		assert_not_nil(user.save)
 		{ 'email' => user.email, 'token' => user.authentication_token }
 	end
+
+
+	def assert_json_list_contain(data, list)
+		assert list!=[]
+		data.each do |key, entries|
+			assert list[0].has_key?(key)
+			temp_list = []
+			list.each do |record|
+				temp_list += [record[key]]
+			end
+			assert_equal(entries, temp_list)
+		end
+	end
+
 
 
 
