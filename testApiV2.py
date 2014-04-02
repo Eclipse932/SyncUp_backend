@@ -10,7 +10,7 @@ import testLib
 class TestUnit(testLib.RestTestCase):
     """Issue a REST API request to run the unit tests, and analyze the result"""
     def testUnit(self):
-        respData = self.makeRequest("/api/v2/TESTAPI/unitTests", method="POST")
+        respData = self.makeRequest("/TESTAPI/unitTests", method="POST")
         self.assertTrue('output' in respData)
         print ("Unit tests output:\n"+
                "\n***** ".join(respData['output'].split("\n")))
@@ -53,74 +53,74 @@ class TestLoginSystem(testLib.RestTestCase):
 
 
 	def testUserEmailExists1(self):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com'})
 
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = False)
 
 
 	def testUserEmailExists2(self):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com'})
 
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password2',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password2',\
 																		  'password_confirmation' : 'password2', 'first_name' : 'u1'}} )
 		self.assertResponse(respData, success = False)
 
 
 	def testUserWrongPassword(self):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com'})
 
-		respData = self.makeRequest("/api/v2/sessions", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password2'}} )
+		respData = self.makeRequest("/sessions", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password2'}} )
 		self.assertResponse(respData, success = False, info = "Login Failed")
 
 
 	def testUserNotExists(self):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com'})
 
-		respData = self.makeRequest("/api/v2/sessions", method="POST", data = { 'user' : { 'email' : 'user2@example.com', 'password' : 'password'}} )
+		respData = self.makeRequest("/sessions", method="POST", data = { 'user' : { 'email' : 'user2@example.com', 'password' : 'password'}} )
 		self.assertResponse(respData, success = False, info = "Login Failed")
 
 
 	def testLoginThroughEmailPassword(self):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com'})
 		token = respData['data']['auth_token']
 
-		respData = self.makeRequest("/api/v2/sessions", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password'}} )
+		respData = self.makeRequest("/sessions", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com', 'auth_token' : token})
 
 
 	def testTokenAuthentication(self):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com'})
 		email = respData['data']['email']
 		token = respData['data']['auth_token']
-		respData = self.makeRequest("/api/v2/activities?email=" + email + "&token=" + token, method="GET", data = {} )
+		respData = self.makeRequest("/activities?email=" + email + "&token=" + token, method="GET", data = {} )
 		self.assertResponse(respData, success = True)
 
 
 	def testLogout(self):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : 'user1@example.com', 'password' : 'password',\
 																		  'password_confirmation' : 'password'}} )
 		self.assertResponse(respData, success = True, data = { 'email' : 'user1@example.com'})
 		email = respData['data']['email']
 		token = respData['data']['auth_token']
 
-		respData = self.makeRequest("/api/v2/sessions?email=" + email + "&token=" + token, method="DELETE", data = {} )
+		respData = self.makeRequest("/sessions?email=" + email + "&token=" + token, method="DELETE", data = {} )
 		self.assertResponse(respData, success = True, info = "Logged out")
 
-		respData = self.makeRequest("/api/v2/activities?email=" + email + "&token=" + token, method="GET", data = {} )
+		respData = self.makeRequest("/activities?email=" + email + "&token=" + token, method="GET", data = {} )
 		self.assertResponse(respData, success = False)
 
 
@@ -162,7 +162,7 @@ class TestFriendSystem(testLib.RestTestCase):
 
 
 	def createUser(self, name, password, first_name=None, last_name=None):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : name + '@example.com', 'password' : password,\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : name + '@example.com', 'password' : password,\
 															'password_confirmation' : password, 'first_name' : first_name, 'last_name' : last_name}} )
 		self.assertResponse(respData, success = True, data = { 'email' : name + '@example.com'})
 		user = {}
@@ -184,14 +184,14 @@ class TestFriendSystem(testLib.RestTestCase):
 		user2 = self.createUser('user2', 'password', first_name=u2f, last_name=u2l)
 		user3 = self.createUser('user3', 'password', first_name=u3f, last_name=u3l)
 		user4 = self.createUser('user4', 'password', first_name=u4f, last_name=u4l)
-		respData = self.makeRequest("/api/v2/searchUser" + user1['url'], method="POST", data = { 'user' : { 'id': user1['id']}} )
+		respData = self.makeRequest("/searchUser" + user1['url'], method="POST", data = { 'user' : { 'id': user1['id']}} )
 		self.assertResponse(respData, success = True, data = { 'id' : [user1['id']]}, dataType = "LIST")
-		respData = self.makeRequest("/api/v2/searchUser" + user1['url'], method="POST", data = { 'user' : { 'first_name': user1['first_name']}} )
+		respData = self.makeRequest("/searchUser" + user1['url'], method="POST", data = { 'user' : { 'first_name': user1['first_name']}} )
 		self.assertResponse(respData, success = True, data = { 'id' : [user1['id'], user4['id']]}, dataType = "LIST")
-		respData = self.makeRequest("/api/v2/searchUser" + user1['url'], method="POST", data = { 'user' : { 'first_name': user1['first_name'],
+		respData = self.makeRequest("/searchUser" + user1['url'], method="POST", data = { 'user' : { 'first_name': user1['first_name'],
 																											'last_name': user1['last_name']}} )
 		self.assertResponse(respData, success = True, data = { 'id' : [user1['id']]}, dataType = "LIST")
-		respData = self.makeRequest("/api/v2/searchUser" + user1['url'], method="POST", data = { 'user' : { 'fidrst_name': user1['first_name'],
+		respData = self.makeRequest("/searchUser" + user1['url'], method="POST", data = { 'user' : { 'fidrst_name': user1['first_name'],
 																											'email': user2['email']}} )
 		self.assertResponse(respData, success = True, data = [])
 
@@ -203,36 +203,36 @@ class TestFriendSystem(testLib.RestTestCase):
 		user2 = self.createUser('user2', 'password')
 		user3 = self.createUser('user3', 'password')
 
-		respData = self.makeRequest("/api/v2/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
+		respData = self.makeRequest("/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
 		self.assertResponse(respData, success = True, info = "request friend")
 
-		respData = self.makeRequest("/api/v2/getSentRequests" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getSentRequests" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get sent friend requests", data = { 'id' : [user2['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user3['id']}} )
+		respData = self.makeRequest("/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user3['id']}} )
 		self.assertResponse(respData, success = True, info = "request friend")
 
-		respData = self.makeRequest("/api/v2/getSentRequests" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getSentRequests" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get sent friend requests", data = { 'id' : [user2['id'], user3['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getPendingFriends" + user2['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getPendingFriends" + user2['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get pending friend requests", data = { 'id' : [user1['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getPendingFriends" + user3['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getPendingFriends" + user3['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get pending friend requests", data = { 'id' : [user1['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/confirmFriend" + user2['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
+		respData = self.makeRequest("/confirmFriend" + user2['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
 																													 'response' : True}} )
 		self.assertResponse(respData, success = True, info = "accept friend")
 
 
-		respData = self.makeRequest("/api/v2/getFriends" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriends" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get all friends", data = { 'id' : [user2['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getFriends" + user2['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriends" + user2['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get all friends", data = { 'id' : [user1['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getFriends" + user3['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriends" + user3['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get all friends", data = { 'id' : []}, dataType = "LIST")
 
 
@@ -240,22 +240,22 @@ class TestFriendSystem(testLib.RestTestCase):
 		user1 = self.createUser('user1', 'password')
 		user2 = self.createUser('user2', 'password')
 
-		respData = self.makeRequest("/api/v2/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
+		respData = self.makeRequest("/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
 		self.assertResponse(respData, success = True, info = "request friend")
 
-		respData = self.makeRequest("/api/v2/getSentRequests" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getSentRequests" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get sent friend requests", data = { 'id' : [user2['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getPendingFriends" + user2['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getPendingFriends" + user2['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get pending friend requests", data = { 'id' : [user1['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/deleteRequest" + user1['url'], method="POST", data = { 'friendship' : { 'request_id': user2['id']}} )
+		respData = self.makeRequest("/deleteRequest" + user1['url'], method="POST", data = { 'friendship' : { 'request_id': user2['id']}} )
 		self.assertResponse(respData, success = True, info = "delete succeeds")
 
-		respData = self.makeRequest("/api/v2/getSentRequests" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getSentRequests" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get sent friend requests", data = { 'id' : []}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getPendingFriends" + user2['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getPendingFriends" + user2['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get pending friend requests", data = { 'id' : []}, dataType = "LIST")
 
 
@@ -296,7 +296,7 @@ class TestActivitySystem(testLib.RestTestCase):
 
 
 	def createUser(self, name, password, nickname=None):
-		respData = self.makeRequest("/api/v2/registrations", method="POST", data = { 'user' : { 'email' : name + '@example.com', 'password' : password,\
+		respData = self.makeRequest("/registrations", method="POST", data = { 'user' : { 'email' : name + '@example.com', 'password' : password,\
 																		  'password_confirmation' : password, 'first_name' : nickname}} )
 		self.assertResponse(respData, success = True, data = { 'email' : name + '@example.com'})
 		user = {}
@@ -309,7 +309,7 @@ class TestActivitySystem(testLib.RestTestCase):
 
 
 	def createActivity(self, user, name='', location=None, description=None, visibility=1):
-		respData = self.makeRequest("/api/v2/activities" + user['url'], method="POST", data = { 'activity' : { 'name': name,
+		respData = self.makeRequest("/activities" + user['url'], method="POST", data = { 'activity' : { 'name': name,
 																											   'location': location,
 																											   'description': description,
 																											   'visibility': visibility}} )
@@ -327,7 +327,7 @@ class TestActivitySystem(testLib.RestTestCase):
 
 		act1 = self.createActivity(user1, name='activity1', location='location1', description='description1')
 
-		respData = self.makeRequest("/api/v2/activities" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/activities" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user1['id']],
 															   'name' : [act1['name']]}, dataType = "LIST")
 
@@ -338,39 +338,39 @@ class TestActivitySystem(testLib.RestTestCase):
 		user2 = self.createUser('user2', 'password')
 		user3 = self.createUser('user3', 'password')
 
-		respData = self.makeRequest("/api/v2/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
+		respData = self.makeRequest("/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
 		self.assertResponse(respData, success = True, info = "request friend")
 
-		respData = self.makeRequest("/api/v2/getSentRequests" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getSentRequests" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get sent friend requests", data = { 'id' : [user2['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user3['id']}} )
+		respData = self.makeRequest("/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user3['id']}} )
 		self.assertResponse(respData, success = True, info = "request friend")
 
-		respData = self.makeRequest("/api/v2/confirmFriend" + user2['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
+		respData = self.makeRequest("/confirmFriend" + user2['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
 																													 'response' : True}} )
 		self.assertResponse(respData, success = True, info = "accept friend")
 
-		respData = self.makeRequest("/api/v2/confirmFriend" + user3['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
+		respData = self.makeRequest("/confirmFriend" + user3['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
 																													 'response' : True}} )
 		self.assertResponse(respData, success = True, info = "accept friend")
 
-		respData = self.makeRequest("/api/v2/getFriends" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriends" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get all friends", data = { 'id' : [user2['id'], user3['id']]}, dataType = "LIST")
 		act1 = self.createActivity(user1, name='user1act', location='location1', description='description1')
 		act2 = self.createActivity(user2, name='user2act', location='location2', description='description2')
 		act3 = self.createActivity(user3, name='user3act', location='location3', description='description3')
 
 
-		respData = self.makeRequest("/api/v2/getFriendsActivities" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriendsActivities" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user2['id'], user3['id']],
 															   'name' : [act2['name'], act3['name']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getFriendsActivities" + user2['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriendsActivities" + user2['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user1['id']],
 															   'name' : [act1['name']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/getFriendsActivities" + user3['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriendsActivities" + user3['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user1['id']],
 															   'name' : [act1['name']]}, dataType = "LIST")
 
@@ -382,24 +382,24 @@ class TestActivitySystem(testLib.RestTestCase):
 		user2 = self.createUser('user2', 'password')
 		user3 = self.createUser('user3', 'password')
 
-		respData = self.makeRequest("/api/v2/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
+		respData = self.makeRequest("/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user2['id']}} )
 		self.assertResponse(respData, success = True, info = "request friend")
 
-		respData = self.makeRequest("/api/v2/getSentRequests" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getSentRequests" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get sent friend requests", data = { 'id' : [user2['id']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user3['id']}} )
+		respData = self.makeRequest("/requestFriend" + user1['url'], method="POST", data = { 'friendship' : { 'friend_id': user3['id']}} )
 		self.assertResponse(respData, success = True, info = "request friend")
 
-		respData = self.makeRequest("/api/v2/confirmFriend" + user2['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
+		respData = self.makeRequest("/confirmFriend" + user2['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
 																													 'response' : True}} )
 		self.assertResponse(respData, success = True, info = "accept friend")
 
-		respData = self.makeRequest("/api/v2/confirmFriend" + user3['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
+		respData = self.makeRequest("/confirmFriend" + user3['url'], method="POST", data = { 'friendship' : { 'request_id' : user1['id'],
 																													 'response' : True}} )
 		self.assertResponse(respData, success = True, info = "accept friend")
 
-		respData = self.makeRequest("/api/v2/getFriends" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/getFriends" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, info = "get all friends", data = { 'id' : [user2['id'], user3['id']]}, dataType = "LIST")
 
 		act1 = self.createActivity(user1, name='user1act', location='location1', description='description1')
@@ -407,14 +407,14 @@ class TestActivitySystem(testLib.RestTestCase):
 		act3 = self.createActivity(user3, name='user3act', location='location3', description='description3')
 
 
-		respData = self.makeRequest("/api/v2/joinActivity" + user1['url'], method="POST", data = { 'activity' : { 'activity_id' : act2['id']}} )
+		respData = self.makeRequest("/joinActivity" + user1['url'], method="POST", data = { 'activity' : { 'activity_id' : act2['id']}} )
 		self.assertResponse(respData, success = True)
 
-		respData = self.makeRequest("/api/v2/activities" + user1['url'], method="GET", data = {} )
+		respData = self.makeRequest("/activities" + user1['url'], method="GET", data = {} )
 		self.assertResponse(respData, success = True, data = { 'host_id' : [user1['id'], user2['id']],
 															   'name' : [act1['name'], act2['name']]}, dataType = "LIST")
 
-		respData = self.makeRequest("/api/v2/joinActivity" + user2['url'], method="POST", data = { 'activity' : { 'activity_id' : act3['id']}} )
+		respData = self.makeRequest("/joinActivity" + user2['url'], method="POST", data = { 'activity' : { 'activity_id' : act3['id']}} )
 		self.assertResponse(respData, success = False, info="not friend with host, so cannot join activity")
 
 
