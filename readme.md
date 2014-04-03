@@ -10,4 +10,4 @@ rake db:migrate
 
 rake db:test:prepare
 
-make func_tests
+rake test
