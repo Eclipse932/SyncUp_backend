@@ -21,6 +21,9 @@ class User < ActiveRecord::Base
 	# has_many :requested_friends, :through => :friendships, :source => :friend, :conditions => "status = " + REQUESTED.to_s, :order => :created_at
 	# has_many :pending_friends, :through => :friendships, :source => :friend, :conditions => "status = " + PENDING.to_s, :order => :created_at
 	# has_many :friendships, :dependent => :destroy
+    def avatar_url
+        avatar.url(:medium)
+    end
 
 
 	def ensure_authentication_token
@@ -43,11 +46,12 @@ class User < ActiveRecord::Base
 	end
 
 
+    # TODO: this is kinda hacky (using a column to store a url), but whatever for now
 	def self.findUser(userJSON)
-		users = User.select("first_name, last_name, email, id, description").where(userJSON)
+		users = User.select("first_name, last_name, email, id, description, avatar_file_name").where(userJSON)
 		users.each do |user|
 			if user.avatar.exists?
-				user[:avatar] = Base64.encode64(open(user.avatar.path(:thumbnail)){ |io| io.read })
+				user[:avatar_file_name] = user.avatar_url
 			end
 		end
 		users
