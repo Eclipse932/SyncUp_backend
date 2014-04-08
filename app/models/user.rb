@@ -50,7 +50,9 @@ class User < ActiveRecord::Base
 	def self.findUser(userJSON)
 		users = User.select("first_name, last_name, email, id, description, avatar_file_name").where(userJSON)
 		users.each do |user|
+            logger.info user.first_name
 			if user.avatar.exists?
+                puts user.avatar_url
 				user[:avatar_file_name] = user.avatar_url
 			end
 		end

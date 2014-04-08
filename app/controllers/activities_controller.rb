@@ -112,12 +112,25 @@ class ActivitiesController < ApplicationController
 			attendee_list = Attendee.where(:activity_id => act.id, :role => GUEST)
 			ids = attendee_list.map(&:user_id)
 			ids += [act.host_id]
-            logger.info ids
 			renderJSON(200, true, "get all attendees", User.findUser(:id => ids))
 		else
 			renderJSON(200, false, "activity not exists or not visible")
 		end
 	end
+
+	def getTodoFollowers
+		permitted = params.require(:activity).permit(:activity_id)
+		act = Activity.find_by(:id => permitted[:activity_id])
+		if act and Activity.visible?(current_user.id, act)
+			attendee_list = Attendee.where(:activity_id => act.id, :role => GUEST)
+			ids = attendee_list.map(&:user_id)
+			#ids += [act.host_id]
+			renderJSON(200, true, "get all attendees", User.findUser(:id => ids))
+		else
+			renderJSON(200, false, "activity not exists or not visible")
+		end
+	end
+
 
 
 	def getFriendsActivities
@@ -142,7 +155,7 @@ class ActivitiesController < ApplicationController
 		friends = Friendship.where(:user_id => current_user.id, :status => ACCEPTED)
 		friendsActivitiesIds = Set.new
 		friends.each do |friend|
-				friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id)).map(&:activity_id)
+				friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id, :role=>1)).map(&:activity_id)
 		end
 		#renderJSON(200, true, "get all friends' todos", Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil))
         activities = Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil)
