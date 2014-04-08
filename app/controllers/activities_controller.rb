@@ -21,10 +21,11 @@ class ActivitiesController < ApplicationController
 
 	end
 
+    # Returns the current users todos.
 	def myTodos
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
-		renderJSON(200, true, "get my activities", Activity.where(:id => ids, :start_time => nil) )
+		renderJSON(200, true, "get my activities", Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil) )
 	end
 
 	def joinActivity 
@@ -111,6 +112,7 @@ class ActivitiesController < ApplicationController
 			attendee_list = Attendee.where(:activity_id => act.id, :role => GUEST)
 			ids = attendee_list.map(&:user_id)
 			ids += [act.host_id]
+            logger.info ids
 			renderJSON(200, true, "get all attendees", User.findUser(:id => ids))
 		else
 			renderJSON(200, false, "activity not exists or not visible")
@@ -124,7 +126,16 @@ class ActivitiesController < ApplicationController
 		friends.each do |friend|
 				friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id)).map(&:activity_id)
 		end
-		renderJSON(200, true, "get all friends' activities", Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL"))
+		#renderJSON(200, true, "get all friends' activities", Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL"))
+        activities = Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL")
+        names = []
+        activities.each do |activity|
+            names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
+        end
+             
+		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
+                                                        :names=>names})
+
 	end
 
 	def getFriendsTodos
@@ -133,7 +144,16 @@ class ActivitiesController < ApplicationController
 		friends.each do |friend|
 				friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id)).map(&:activity_id)
 		end
-		renderJSON(200, true, "get all friends' todos", Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil))
+		#renderJSON(200, true, "get all friends' todos", Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil))
+        activities = Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil)
+        names = []
+        activities.each do |activity|
+            names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
+        end
+             
+		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
+                                                        :names=>names})
+
 	end
 
 	def myUpcomingActivities
