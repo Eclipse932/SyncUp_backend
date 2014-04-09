@@ -65,6 +65,7 @@ Iter1::Application.routes.draw do
     post 'inviteActivity' => 'activities#inviteActivity'
     post 'confirmActivity' => 'activities#confirmActivity'
     post 'getActivityAttendees' => 'activities#getActivityAttendees'
+    post 'todoFollowers' => 'activities#getTodoFollowers'
 
     get 'getFriends' => 'friendships#getFriends'
     get 'getPendingFriends' => 'friendships#getPendingFriends'

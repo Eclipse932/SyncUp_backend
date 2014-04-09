@@ -21,10 +21,11 @@ class ActivitiesController < ApplicationController
 
 	end
 
+    # Returns the current users todos.
 	def myTodos
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
-		renderJSON(200, true, "get my activities", Activity.where(:id => ids, :start_time => nil) )
+		renderJSON(200, true, "get my activities", Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil) )
 	end
 
 	def joinActivity 
@@ -63,7 +64,7 @@ class ActivitiesController < ApplicationController
 
 
 	def inviteActivity
-		permitted = params.require(:attendee).permit(:user_id, :activity_id)
+		permitted = params.require(:attendees).permit(:user_id, :activity_id)
 		permitted[:role] = PENDING
 		if Attendee.find_by(:user_id => current_user.id, :activity_id => permitted[:activity_id], :role => HOST)
 			atd = Attendee.new(permitted)
@@ -117,6 +118,20 @@ class ActivitiesController < ApplicationController
 		end
 	end
 
+	def getTodoFollowers
+		permitted = params.require(:activity).permit(:activity_id)
+		act = Activity.find_by(:id => permitted[:activity_id])
+		if act and Activity.visible?(current_user.id, act)
+			attendee_list = Attendee.where(:activity_id => act.id, :role => GUEST)
+			ids = attendee_list.map(&:user_id)
+			#ids += [act.host_id]
+			renderJSON(200, true, "get all attendees", User.findUser(:id => ids))
+		else
+			renderJSON(200, false, "activity not exists or not visible")
+		end
+	end
+
+
 
 	def getFriendsActivities
 		friends = Friendship.where(:user_id => current_user.id, :status => ACCEPTED)
@@ -124,16 +139,34 @@ class ActivitiesController < ApplicationController
 		friends.each do |friend|
 				friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id)).map(&:activity_id)
 		end
-		renderJSON(200, true, "get all friends' activities", Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL"))
+		#renderJSON(200, true, "get all friends' activities", Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL"))
+        activities = Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL")
+        names = []
+        activities.each do |activity|
+            names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
+        end
+             
+		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
+                                                        :names=>names})
+
 	end
 
 	def getFriendsTodos
 		friends = Friendship.where(:user_id => current_user.id, :status => ACCEPTED)
 		friendsActivitiesIds = Set.new
 		friends.each do |friend|
-				friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id)).map(&:activity_id)
+				friendsActivitiesIds += (Attendee.where(:user_id => friend.friend_id, :role=>1)).map(&:activity_id)
 		end
-		renderJSON(200, true, "get all friends' todos", Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil))
+		#renderJSON(200, true, "get all friends' todos", Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil))
+        activities = Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil)
+        names = []
+        activities.each do |activity|
+            names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
+        end
+             
+		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
+                                                        :names=>names})
+
 	end
 
 	def myUpcomingActivities

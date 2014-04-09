@@ -5,27 +5,27 @@ class UsersController < ApplicationController
 
 
 	def create
-    permitted = params.require(:user).permit(:email, :first_name, :last_name, :description, :avatar,
-    																				 :password, :password_confirmation)
-    user = User.new(permitted)
-    if user.save
-    	if user == nil
-    		puts "wtf is this nil"
-    	end
-      sign_in user
-      render :status => 200,
-           :json => { :success => true,
-                      :info => "Registered",
-                      :data => { :auth_token => current_user.authentication_token,
-                                 :email => current_user.email,
-                                 :user => user} }
-    else
-      render :status => :unprocessable_entity,
-             :json => { :success => false,
-                        :info => user.errors,
-                        :data => {} }
+        permitted = params.require(:user).permit(:email, :first_name, :last_name, :description, :avatar,
+                                                                                         :password, :password_confirmation, :phone_number)
+        user = User.new(permitted)
+        if user.save
+            if user == nil
+                puts "wtf is this nil"
+            end
+          sign_in user
+          render :status => 200,
+               :json => { :success => true,
+                          :info => "Registered",
+                          :data => { :auth_token => current_user.authentication_token,
+                                     :email => current_user.email,
+                                     :user => user} }
+        else
+          render :status => :unprocessable_entity,
+                 :json => { :success => false,
+                            :info => user.errors,
+                            :data => {} }
+        end
     end
-  end
 		
 
 	def searchUser
@@ -36,7 +36,7 @@ class UsersController < ApplicationController
 
 
 	def getMyProfile
-		user = User.select("first_name, last_name, email, id, description, last_sign_in_at").find(current_user.id)
+		user = User.select("first_name, last_name, email, id, description, avatar_file_name, last_sign_in_at").find(current_user.id)
 
 		if current_user.avatar.exists?
 			user[:avatar] = Base64.encode64(open(current_user.avatar.path(:thumbnail)){ |io| io.read })
