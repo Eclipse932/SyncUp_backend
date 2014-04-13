@@ -93,11 +93,9 @@ class ActivitiesController < ApplicationController
 				atd.save
 				renderJSON(200, true, "confirm to attend activity")
 			else
-				if atd.destroy
-					renderJSON(200, true, "reject activity")
-				else
-					renderJSON(200, false, "unexpected error for atd destroy")
-				end
+				atd.role = DECLINED
+				atd.save
+				renderJSON(200, true, "reject activity")
 			end
 		else
 			renderJSON(200, false, "not in the pending list") 
