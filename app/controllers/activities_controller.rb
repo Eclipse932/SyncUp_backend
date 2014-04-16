@@ -168,7 +168,7 @@ class ActivitiesController < ApplicationController
         		entry = activity.as_json
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
             if activity.photo.exists?
-							entry[:photo_thumbnail] = activity.photo.url(:thumbnail)
+							entry[:photo_thumbnail] = activity.photo.url(:thumb)
 							entry[:photo_medium] = activity.photo.url(:medium)
 							entry[:photo_origin] = activity.photo.url(:origin)
 						end
@@ -194,7 +194,7 @@ class ActivitiesController < ApplicationController
         		entry = activity.as_json
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
             if activity.photo.exists?
-							entry[:photo_thumbnail] = activity.photo.url(:thumbnail)
+							entry[:photo_thumbnail] = activity.photo.url(:thumb)
 							entry[:photo_medium] = activity.photo.url(:medium)
 							entry[:photo_origin] = activity.photo.url(:origin)
 						end
@@ -214,7 +214,7 @@ class ActivitiesController < ApplicationController
 		acts.each do |act|
 			entry = act.as_json
 			if act.photo.exists?
-				entry[:photo_thumbnail] = act.photo.url(:thumbnail)
+				entry[:photo_thumbnail] = act.photo.url(:thumb)
 				entry[:photo_medium] = act.photo.url(:medium)
 				entry[:photo_origin] = act.photo.url(:origin)
 			end
@@ -250,7 +250,7 @@ class ActivitiesController < ApplicationController
 		if activity.photo.exists?
 			act[:photo_origin] = activity.photo.url(:origin)
 			act[:photo_medium] = activity.photo.url(:medium)
-			act[:photo_thumbnail] = activity.photo.url(:thumbnail)
+			act[:photo_thumbnail] = activity.photo.url(:thumb)
 		end
 		isHost = false
 		if current_user.id == activity.host_id
