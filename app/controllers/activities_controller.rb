@@ -25,7 +25,7 @@ class ActivitiesController < ApplicationController
 				act[:photo_origin] = act.photo.url(:origin)
 			end
 		end
-		renderJSON(200, true, "get my activities", act )
+		renderJSON(200, true, "get my activities", acts)
 
 	end
 
@@ -80,7 +80,7 @@ class ActivitiesController < ApplicationController
 
 
 	def inviteActivity
-		permitted = params.require(:attendees).permit(:user_id, :activity_id)
+		permitted = params.require(:attendee).permit(:user_id, :activity_id)
 		permitted[:role] = PENDING
 		if Attendee.find_by(:user_id => current_user.id, :activity_id => permitted[:activity_id], :role => HOST)
 			atd = Attendee.new(permitted)
