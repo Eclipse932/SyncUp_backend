@@ -173,6 +173,24 @@ class ActivitiesController < ApplicationController
 		renderJSON(200, true, "activities!", Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month))
 	end
 
+	def updateActivityRole
+		permitted = params.require(:attendee).permit(:user_id, :activity_id)
+		atd = Attendee.find_by(permitted)
+		if atd
+			requestedRole = params[:attendee][:role]
+			if atd.role == HOST or requestedRole <= HOST or 
+				renderJSON(200, false, "can't change host role")
+			else
+				atd.role = requestedRole
+				atd.save
+			end
+			
+		else
+			renderJSON(200, false, "attendee not exists")
+		end
+
+	end
+
 
 	def getActivity
 		params.permit!
