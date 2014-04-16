@@ -174,8 +174,7 @@ class ActivitiesController < ApplicationController
 	end
 
 	def updateActivityRole
-		permitted = params.require(:attendee).permit(:user_id, :activity_id)
-		atd = Attendee.find_by(permitted)
+		atd = Attendee.find_by(:activity_id => params[:attendee][:activity_id], :user_id => current_user.id)
 		if atd
 			requestedRole = params[:attendee][:role]
 			if atd.role == HOST or requestedRole <= HOST or 
