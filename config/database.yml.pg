@@ -1,0 +1,20 @@
+development:
+    adapter: postgresql
+    database: syncup_dev
+    pool: 5
+    username: agchang
+    password: 
+
+test:
+    adapter: postgresql
+    database: syncup_test
+    pool: 5
+    username: agchang
+    password: 
+
+production:
+  adapter: postgresql
+  database: syncup_production
+  pool: 5
+  username: agchang
+  password: 
