@@ -15,7 +15,7 @@
 /log/*.log
 /tmp
 
-public/system/users/avatars/*
+public/system/*
 
 *.swp
 *.swo
