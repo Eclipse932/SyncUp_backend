@@ -4,6 +4,7 @@ class Activity < ActiveRecord::Base
 	# has_many :users, through: :attendees
 
   validates_presence_of :name
+  has_attached_file :photo, :styles => { :medium => "300x300>", :thumb => "100x100>" }, :default_url => "/images/:style/missing.png"
 	#validate :start_must_be_before_end_time
 
   	#def start_must_be_before_end_time
