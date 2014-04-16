@@ -4,6 +4,7 @@ class ActivitiesControllerTest < ActionController::TestCase
   include Devise::TestHelpers
 	HOST = 1
 	GUEST= 2
+	DECLINED = 4
 
 	STARRED = 1
 	ACCEPTED = 2
@@ -270,7 +271,9 @@ class ActivitiesControllerTest < ActionController::TestCase
 		post(:confirmActivity, user2)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id))
+		attendee = Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id)
+		assert_not_nil(attendee)
+		assert_equal(DECLINED, attendee.role)
 		
 	end
 
