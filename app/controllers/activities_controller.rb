@@ -18,14 +18,17 @@ class ActivitiesController < ApplicationController
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
 		acts = Activity.where("start_time IS NOT NULL").where(:id => ids)
+		js = []
 		acts.each do |act|
+			entry = act.as_json
 			if act.photo.exists?
-				act[:photo_thumbnail] = act.photo.url(:thumbnail)
-				act[:photo_medium] = act.photo.url(:medium)
-				act[:photo_origin] = act.photo.url(:origin)
+				entry[:photo_thumbnail] = act.photo.url(:thumbnail)
+				entry[:photo_medium] = act.photo.url(:medium)
+				entry[:photo_origin] = act.photo.url(:origin)
 			end
+			js += [entry]
 		end
-		renderJSON(200, true, "get my activities", acts)
+		renderJSON(200, true, "get my activities", js)
 
 	end
 
@@ -34,14 +37,18 @@ class ActivitiesController < ApplicationController
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
 		acts = Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil)
+		js = []
 		acts.each do |act|
+			entry = act.as_json
 			if act.photo.exists?
-				act[:photo_thumbnail] = act.photo.url(:thumbnail)
-				act[:photo_medium] = act.photo.url(:medium)
-				act[:photo_origin] = act.photo.url(:origin)
+				entry[:photo_thumbnail] = act.photo.url(:thumbnail)
+				entry[:photo_medium] = act.photo.url(:medium)
+				entry[:photo_origin] = act.photo.url(:origin)
 			end
+			js += [entry]
+
 		end
-		renderJSON(200, true, "get my activities", acts)
+		renderJSON(200, true, "get my activities", js)
 	end
 
 	def joinActivity 
@@ -156,16 +163,19 @@ class ActivitiesController < ApplicationController
 		#renderJSON(200, true, "get all friends' activities", Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL"))
         activities = Activity.where(:id => friendsActivitiesIds.to_a).where("start_time IS NOT NULL")
         names = []
+        js = []
         activities.each do |activity|
+        		entry = activity.as_json
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
             if activity.photo.exists?
-							activity[:photo_origin] = activity.photo.url(:origin)
-							activity[:photo_medium] = activity.photo.url(:medium)
-							activity[:photo_thumbnail] = activity.photo.url(:thumbnail)
+							entry[:photo_thumbnail] = activity.photo.url(:thumbnail)
+							entry[:photo_medium] = activity.photo.url(:medium)
+							entry[:photo_origin] = activity.photo.url(:origin)
 						end
+						js += [entry]
         end
              
-		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
+		renderJSON(200, true, "get all friends' activities", {:activities=>js,
                                                         :names=>names})
 
 	end
@@ -179,16 +189,19 @@ class ActivitiesController < ApplicationController
 		#renderJSON(200, true, "get all friends' todos", Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil))
         activities = Activity.where(:id => friendsActivitiesIds.to_a, :start_time => nil)
         names = []
+        js = []
         activities.each do |activity|
+        		entry = activity.as_json
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
             if activity.photo.exists?
-							activity[:photo_origin] = activity.photo.url(:origin)
-							activity[:photo_medium] = activity.photo.url(:medium)
-							activity[:photo_thumbnail] = activity.photo.url(:thumbnail)
+							entry[:photo_thumbnail] = activity.photo.url(:thumbnail)
+							entry[:photo_medium] = activity.photo.url(:medium)
+							entry[:photo_origin] = activity.photo.url(:origin)
 						end
+						js += [entry]
         end
              
-		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
+		renderJSON(200, true, "get all friends' activities", {:activities=>js,
                                                         :names=>names})
 
 	end
@@ -197,14 +210,18 @@ class ActivitiesController < ApplicationController
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
 		acts = Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month)
+		js = []
 		acts.each do |act|
+			entry = act.as_json
 			if act.photo.exists?
-				act[:photo_thumbnail] = act.photo.url(:thumbnail)
-				act[:photo_medium] = act.photo.url(:medium)
-				act[:photo_origin] = act.photo.url(:origin)
+				entry[:photo_thumbnail] = act.photo.url(:thumbnail)
+				entry[:photo_medium] = act.photo.url(:medium)
+				entry[:photo_origin] = act.photo.url(:origin)
 			end
+			js += [entry]
 		end
-		renderJSON(200, true, "activities!", acts)
+
+		renderJSON(200, true, "activities!", js)
 	end
 
 	def updateActivityRole
@@ -229,10 +246,11 @@ class ActivitiesController < ApplicationController
 		params.permit!
 		activity_id = params[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
+		act = activity.as_json
 		if activity.photo.exists?
-			activity[:photo_origin] = activity.photo.url(:origin)
-			activity[:photo_medium] = activity.photo.url(:medium)
-			activity[:photo_thumbnail] = activity.photo.url(:thumbnail)
+			act[:photo_origin] = activity.photo.url(:origin)
+			act[:photo_medium] = activity.photo.url(:medium)
+			act[:photo_thumbnail] = activity.photo.url(:thumbnail)
 		end
 		isHost = false
 		if current_user.id == activity.host_id
@@ -242,11 +260,11 @@ class ActivitiesController < ApplicationController
 		if isHost
 				render :status => 200, :json => {:success => true,
 																				 :info => {:is_host => true},
-																				 :data => activity }
+																				 :data => act }
 		else
 				render :status => 200, :json => {:success => true,
 																				 :info => {:is_host => false},
-																				 :data => activity }
+																				 :data => act }
 		end
 	end
 end
