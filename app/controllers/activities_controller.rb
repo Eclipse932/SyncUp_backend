@@ -17,7 +17,13 @@ class ActivitiesController < ApplicationController
 	def myActivities
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
-		renderJSON(200, true, "get my activities", Activity.where("start_time IS NOT NULL").where(:id => ids) )
+		acts = Activity.where("start_time IS NOT NULL").where(:id => ids)
+		acts.each do |act|
+			if act.photo.exists?
+				act[:photo_file_name] = act.photo_url
+			end
+		end
+		renderJSON(200, true, "get my activities", act )
 
 	end
 
@@ -25,7 +31,13 @@ class ActivitiesController < ApplicationController
 	def myTodos
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
-		renderJSON(200, true, "get my activities", Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil) )
+		acts = Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil)
+		acts.each do |act|
+			if act.photo.exists?
+				act[:photo_file_name] = act.photo_url
+			end
+		end
+		renderJSON(200, true, "get my activities", acts)
 	end
 
 	def joinActivity 
@@ -142,6 +154,9 @@ class ActivitiesController < ApplicationController
         names = []
         activities.each do |activity|
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
+            if activity.photo.exists?
+							activity[:photo_file_name] = activity.photo_url
+						end
         end
              
 		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
@@ -160,6 +175,9 @@ class ActivitiesController < ApplicationController
         names = []
         activities.each do |activity|
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
+            if activity.photo.exists?
+							activity[:photo_file_name] = activity.photo_url
+						end
         end
              
 		renderJSON(200, true, "get all friends' activities", {:activities=>activities,
@@ -170,7 +188,13 @@ class ActivitiesController < ApplicationController
 	def myUpcomingActivities
 		attendees = Attendee.where(:user_id => current_user.id)
 		ids = attendees.map(&:activity_id)
-		renderJSON(200, true, "activities!", Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month))
+		acts = Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month)
+		acts.each do |act|
+			if act.photo.exists?
+				act[:photo_file_name] = act.photo_url
+			end
+		end
+		renderJSON(200, true, "activities!", acts)
 	end
 
 	def updateActivityRole
@@ -195,6 +219,9 @@ class ActivitiesController < ApplicationController
 		params.permit!
 		activity_id = params[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
+		if activity.photo.exists?
+			activity[:photo_file_name] = activity.photo_url
+		end
 		isHost = false
 		if current_user.id == activity.host_id
 				isHost = true
@@ -203,11 +230,11 @@ class ActivitiesController < ApplicationController
 		if isHost
 				render :status => 200, :json => {:success => true,
 																				 :info => {:is_host => true},
-																				 :data => Activity.where(:id => activity_id) }
+																				 :data => activity }
 		else
 				render :status => 200, :json => {:success => true,
 																				 :info => {:is_host => false},
-																				 :data => Activity.where(:id => activity_id) }
+																				 :data => activity }
 		end
 	end
 end
