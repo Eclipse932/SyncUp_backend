@@ -22,7 +22,7 @@ class ActivitiesController < ApplicationController
 		acts.each do |act|
 			entry = act.as_json
 			if act.photo.exists?
-				entry[:photo_thumbnail] = act.photo.url(:thumbnail)
+				entry[:photo_thumbnail] = act.photo.url(:thumb)
 				entry[:photo_medium] = act.photo.url(:medium)
 				entry[:photo_origin] = act.photo.url(:origin)
 			end
@@ -41,7 +41,7 @@ class ActivitiesController < ApplicationController
 		acts.each do |act|
 			entry = act.as_json
 			if act.photo.exists?
-				entry[:photo_thumbnail] = act.photo.url(:thumbnail)
+				entry[:photo_thumbnail] = act.photo.url(:thumb)
 				entry[:photo_medium] = act.photo.url(:medium)
 				entry[:photo_origin] = act.photo.url(:origin)
 			end
