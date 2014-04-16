@@ -20,7 +20,9 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where("start_time IS NOT NULL").where(:id => ids)
 		acts.each do |act|
 			if act.photo.exists?
-				act[:photo_file_name] = act.photo_url
+				act[:photo_thumbnail] = act.photo.url(:thumbnail)
+				act[:photo_medium] = act.photo.url(:medium)
+				act[:photo_origin] = act.photo.url(:origin)
 			end
 		end
 		renderJSON(200, true, "get my activities", act )
@@ -34,7 +36,9 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil)
 		acts.each do |act|
 			if act.photo.exists?
-				act[:photo_file_name] = act.photo_url
+				act[:photo_thumbnail] = act.photo.url(:thumbnail)
+				act[:photo_medium] = act.photo.url(:medium)
+				act[:photo_origin] = act.photo.url(:origin)
 			end
 		end
 		renderJSON(200, true, "get my activities", acts)
@@ -155,7 +159,9 @@ class ActivitiesController < ApplicationController
         activities.each do |activity|
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
             if activity.photo.exists?
-							activity[:photo_file_name] = activity.photo_url
+							activity[:photo_origin] = activity.photo.url(:origin)
+							activity[:photo_medium] = activity.photo.url(:medium)
+							activity[:photo_thumbnail] = activity.photo.url(:thumbnail)
 						end
         end
              
@@ -176,7 +182,9 @@ class ActivitiesController < ApplicationController
         activities.each do |activity|
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
             if activity.photo.exists?
-							activity[:photo_file_name] = activity.photo_url
+							activity[:photo_origin] = activity.photo.url(:origin)
+							activity[:photo_medium] = activity.photo.url(:medium)
+							activity[:photo_thumbnail] = activity.photo.url(:thumbnail)
 						end
         end
              
@@ -191,7 +199,9 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month)
 		acts.each do |act|
 			if act.photo.exists?
-				act[:photo_file_name] = act.photo_url
+				act[:photo_thumbnail] = act.photo.url(:thumbnail)
+				act[:photo_medium] = act.photo.url(:medium)
+				act[:photo_origin] = act.photo.url(:origin)
 			end
 		end
 		renderJSON(200, true, "activities!", acts)
@@ -220,7 +230,9 @@ class ActivitiesController < ApplicationController
 		activity_id = params[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
 		if activity.photo.exists?
-			activity[:photo_file_name] = activity.photo_url
+			activity[:photo_origin] = activity.photo.url(:origin)
+			activity[:photo_medium] = activity.photo.url(:medium)
+			activity[:photo_thumbnail] = activity.photo.url(:thumbnail)
 		end
 		isHost = false
 		if current_user.id == activity.host_id
