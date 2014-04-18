@@ -162,7 +162,7 @@
   },
   "RSpec": {
     "coverage": {
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/models/activity.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/activity.rb": [
         1,
         null,
         null,
@@ -222,7 +222,7 @@
         null,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/models/attendee.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/attendee.rb": [
         1,
         1,
         1,
@@ -231,7 +231,7 @@
         null,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/models/friendship.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/friendship.rb": [
         1,
         null,
         null,
@@ -244,47 +244,47 @@
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/registrations_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/registrations_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/sessions_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/sessions_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/users_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/users_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/activities_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/activities_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/friendships_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/friendships_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/registrations_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/registrations_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/sessions_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/sessions_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/users_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/users_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/application_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/application_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/helpers/home_helper.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/home_helper.rb": [
         1,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/controllers/activities_controller.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/activities_controller.rb": [
         1,
         null,
         1,
@@ -320,10 +320,6 @@
         3,
         3,
         3,
-        5,
-        5,
-        0,
-        null,
         5,
         null,
         null,
@@ -520,30 +516,29 @@
         null,
         null,
         2,
+        null,
+        null,
+        1,
+        null,
+        null,
+        null,
         1,
         null,
         null,
         null,
         1,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        1,
-        12,
-        12,
+        17,
+        17,
         0,
         0,
         0,
         null,
-        12,
+        17,
         null,
         null,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/controllers/application_controller.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/application_controller.rb": [
         1,
         null,
         null,
@@ -551,6 +546,9 @@
         1,
         null,
         1,
+        null,
+        null,
+        null,
         51,
         null,
         null,
@@ -560,9 +558,6 @@
         null,
         null,
         null,
-        null,
-        null,
-        null,
         1,
         1,
         53,
@@ -580,7 +575,7 @@
         null,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/controllers/friendships_controller.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/friendships_controller.rb": [
         1,
         null,
         1,
@@ -688,7 +683,7 @@
         null,
         null
       ],
-      "/Users/Gongshi/Dropbox/cs169/SyncUp_backend/app/controllers/users_controller.rb": [
+      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/users_controller.rb": [
         1,
         null,
         1,
@@ -701,17 +696,17 @@
         6,
         6,
         1,
+        null,
+        null,
+        null,
+        null,
+        null,
         1,
-        null,
-        null,
         null,
         null,
         null,
         null,
         5,
-        null,
-        null,
-        null,
         null,
         null,
         null,
@@ -777,6 +772,6 @@
         null
       ]
     },
-    "timestamp": 1397855963
+    "timestamp": 1397862605
   }
 }
