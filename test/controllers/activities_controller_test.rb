@@ -340,6 +340,134 @@ class ActivitiesControllerTest < ActionController::TestCase
 	end
 
 
+	def test_getTodoFollowers_with_invalid_todo
+		puts "\nCalling test_getTodoFollowers_with_invalid_todo"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user2["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1", :start_time => nil)
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user1["activity"] = {"activity_id" => 12345845} 
+		post(:getTodoFollowers, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(false, parsed_body["success"])
+		assert_equal("activity not exists or not visible", parsed_body["info"])
+
+	end
+
+
+	def test_getTodoFollowers_with_valid_todo
+		puts "\nCalling test_getTodoFollowers_with_invalid_todo"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user2["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1", :start_time => nil)
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user1["activity"] = {"activity_id" => act1.id} 
+		post(:getTodoFollowers, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_json_list_contain({"id" => [user2["id"], user3["id"]]}, parsed_body["data"])
+
+	end
+
+
+	def test_valid_updateActivityRole
+		puts "\nCalling test_valid_updateActivityRole"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user1["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user1["attendee"] = {"activity_id" => act1.id, "role" => GUEST}
+		post(:updateActivityRole, user1)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(false, parsed_body["success"])
+		
+	end
+
+
+	def test_invalid_updateActivityRole
+		puts "\nCalling test_invalid_updateActivityRole"
+
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'juice')
+		user3 = createUser('user3@example.com', 'orange', 'juice')
+
+		f1 = Friendship.new(:user_id => user1["id"], :friend_id => user2["id"], :status => ACCEPTED)
+		f2 = Friendship.new(:user_id => user2["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f3 = Friendship.new(:user_id => user3["id"], :friend_id => user1["id"], :status => ACCEPTED)
+		f4 = Friendship.new(:user_id => user1["id"], :friend_id => user3["id"], :status => ACCEPTED)
+		f1.save
+		f2.save
+		f3.save
+		f4.save
+
+		act1 = createActivity(user1["id"], "act1")
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		atd = Attendee.new(:user_id => user3["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+
+		user2["attendee"] = {"activity_id" => act1.id, "role" => DECLINED}
+		post(:updateActivityRole, user2)
+		parsed_body = JSON.parse(response.body)
+		puts parsed_body
+		assert_equal(true, parsed_body["success"])
+		assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => DECLINED))
+	end
+
+
+
+
+
+
+
 	def test_getFriendsActivities_1
 		puts "\nCalling test_getFriendsActivities_1"
 

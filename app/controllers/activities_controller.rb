@@ -227,12 +227,13 @@ class ActivitiesController < ApplicationController
 	def updateActivityRole
 		atd = Attendee.find_by(:activity_id => params[:attendee][:activity_id], :user_id => current_user.id)
 		if atd
-			requestedRole = params[:attendee][:role]
-			if atd.role == HOST or requestedRole <= HOST
+			requestedRole = params[:attendee][:role].to_i
+			if atd.role == HOST || (requestedRole < HOST)
 				renderJSON(200, false, "can't change host role")
 			else
 				atd.role = requestedRole
 				atd.save
+				renderJSON(200, true, "actvitiy role updated")
 			end
 			
 		else
