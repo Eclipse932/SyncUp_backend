@@ -50,7 +50,7 @@ class UsersController < ApplicationController
 		renderJSON(200, true, "profile updated")
 	end
 
-	def changePassword
+	def updatePassword
 		user = User.authenticate(:email => params[:email], :password => params[:user][:current_password])
 		if current_user == user
 			permitted = params.require(:user).permit(:password, :password_confirmation)

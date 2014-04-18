@@ -457,7 +457,6 @@ class ActivitiesControllerTest < ActionController::TestCase
 		user2["attendee"] = {"activity_id" => act1.id, "role" => DECLINED}
 		post(:updateActivityRole, user2)
 		parsed_body = JSON.parse(response.body)
-		puts parsed_body
 		assert_equal(true, parsed_body["success"])
 		assert_not_nil(Attendee.find_by(:user_id => user2["id"], :activity_id => act1.id, :role => DECLINED))
 	end
