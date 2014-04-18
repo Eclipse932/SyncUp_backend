@@ -20,13 +20,7 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where("start_time IS NOT NULL").where(:id => ids)
 		js = []
 		acts.each do |act|
-			entry = act.as_json
-			if act.photo.exists?
-				entry[:photo_thumbnail] = act.photo.url(:thumb)
-				entry[:photo_medium] = act.photo.url(:medium)
-				entry[:photo_origin] = act.photo.url(:origin)
-			end
-			js += [entry]
+			js += [getAct(act)]
 		end
 		renderJSON(200, true, "get my activities", js)
 
@@ -41,9 +35,7 @@ class ActivitiesController < ApplicationController
 		acts.each do |act|
 			entry = act.as_json
 			if act.photo.exists?
-				entry[:photo_thumbnail] = act.photo.url(:thumb)
-				entry[:photo_medium] = act.photo.url(:medium)
-				entry[:photo_origin] = act.photo.url(:origin)
+				addUrl(entry, act)
 			end
 			js += [entry]
 
@@ -165,14 +157,8 @@ class ActivitiesController < ApplicationController
         names = []
         js = []
         activities.each do |activity|
-        		entry = activity.as_json
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
-            if activity.photo.exists?
-							entry[:photo_thumbnail] = activity.photo.url(:thumb)
-							entry[:photo_medium] = activity.photo.url(:medium)
-							entry[:photo_origin] = activity.photo.url(:origin)
-						end
-						js += [entry]
+            js += [getAct(activity)]
         end
              
 		renderJSON(200, true, "get all friends' activities", {:activities=>js,
@@ -191,14 +177,8 @@ class ActivitiesController < ApplicationController
         names = []
         js = []
         activities.each do |activity|
-        		entry = activity.as_json
             names.push ( User.find_by(:id=>activity.host_id).first_name + " " + User.find_by(:id=>activity.host_id).last_name)
-            if activity.photo.exists?
-							entry[:photo_thumbnail] = activity.photo.url(:thumb)
-							entry[:photo_medium] = activity.photo.url(:medium)
-							entry[:photo_origin] = activity.photo.url(:origin)
-						end
-						js += [entry]
+            js += [getAct(activity)]
         end
              
 		renderJSON(200, true, "get all friends' activities", {:activities=>js,
@@ -212,13 +192,7 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month)
 		js = []
 		acts.each do |act|
-			entry = act.as_json
-			if act.photo.exists?
-				entry[:photo_thumbnail] = act.photo.url(:thumb)
-				entry[:photo_medium] = act.photo.url(:medium)
-				entry[:photo_origin] = act.photo.url(:origin)
-			end
-			js += [entry]
+			js += [getAct(act)]
 		end
 
 		renderJSON(200, true, "activities!", js)
@@ -268,4 +242,16 @@ class ActivitiesController < ApplicationController
 																				 :data => act }
 		end
 	end
+
+
+	def getAct(act)
+		entry = act.as_json
+		if act.photo.exists?
+			entry[:photo_thumbnail] = activity.photo.url(:thumb)
+			entry[:photo_medium] = activity.photo.url(:medium)
+			entry[:photo_origin] = activity.photo.url(:origin)
+		end
+		return entry
+	end
+
 end
