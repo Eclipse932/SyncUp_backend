@@ -217,12 +217,7 @@ class ActivitiesController < ApplicationController
 		params.permit!
 		activity_id = params[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
-		act = activity.as_json
-		if activity.photo.exists?
-			act[:photo_origin] = activity.photo.url(:origin)
-			act[:photo_medium] = activity.photo.url(:medium)
-			act[:photo_thumbnail] = activity.photo.url(:thumb)
-		end
+		act = self.getAct(activity)
 		isHost = false
 		if current_user.id == activity.host_id
 				isHost = true
@@ -244,7 +239,7 @@ class ActivitiesController < ApplicationController
 		if act.photo.exists?
 			entry[:photo_thumbnail] = act.photo.url(:thumb)
 			entry[:photo_medium] = act.photo.url(:medium)
-			entry[:photo_origin] = act.photo.url(:origin)
+			entry[:photo_original] = act.photo.url(:original)
 		end
 		return entry
 	end
