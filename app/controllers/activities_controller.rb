@@ -218,7 +218,7 @@ class ActivitiesController < ApplicationController
 				entry[:photo_medium] = act.photo.url(:medium)
 				entry[:photo_origin] = act.photo.url(:origin)
 			end
-			js += [entry]
+			js = js + [entry]
 		end
 
 		renderJSON(200, true, "activities!", js)

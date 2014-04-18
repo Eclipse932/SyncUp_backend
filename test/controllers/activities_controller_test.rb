@@ -461,7 +461,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		get(:myUpcomingActivities, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"])
+		assert_json_list_contain({"id" => [act3.id, act1.id]}, parsed_body["data"])
 
 	end
 
