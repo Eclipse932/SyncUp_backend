@@ -143,6 +143,30 @@ class UsersControllerTest < ActionController::TestCase
 	end
 
 
+	def test_updatePassword
+		puts "\nCalling test_updatePassword"
+
+		request_json = createUser('user1@example.com', 'apple', 'pie')
+		request_json['user'] = { 'current_password' => 'pass123word', 'password' => 'passw', 'password_confirmation' => 'passw'}
+		post(:updatePassword, request_json)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(false, parsed_body["success"])
+
+		request_json['user'] = { 'current_password' => 'password', 'password' => 'passw1', 'password_confirmation' => 'passw2'}
+		post(:updatePassword, request_json)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(false, parsed_body["success"])
+
+		request_json['user'] = { 'current_password' => 'password', 'password' => 'passw', 'password_confirmation' => 'passw'}
+		post(:updatePassword, request_json)
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert(User.authenticate(:email => request_json['email'], :password => 'passw'))
+
+
+
+	end
+
 
 	def createUser(email, first_name="", last_name="")
 		user = User.new(:email => email, :password => 'password', :password_confirmation => 'password',
