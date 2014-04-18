@@ -50,6 +50,19 @@ class UsersController < ApplicationController
 		renderJSON(200, true, "profile updated")
 	end
 
+	def changePassword
+		user = User.authenticate(:email => params[:email], :password => params[:user][:current_password])
+		if current_user == user
+			permitted = params.require(:user).permit(:password, :password_confirmation)
+			if user.update(permitted)
+				renderJSON(200, true, "password updated")
+			else
+				renderJSON(200, false, "password and password_confirmation are not the same")
+			end
+		else
+			renderJSON(200, false, "wrong password")
+		end
+	end
 
 	def resetFixture
 		User.delete_all
