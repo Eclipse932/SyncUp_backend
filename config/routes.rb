@@ -47,6 +47,7 @@ Iter1::Application.routes.draw do
     post '/TESTAPI/resetFixture' => 'users#resetFixture'
     post '/TESTAPI/unitTests' => 'users#unitTests'
     post 'updateMyProfile' => 'users#updateMyProfile'
+    post 'updatePassword' => 'users#updatePassword'
     get 'getMyProfile' => 'users#getMyProfile'
 
     post 'sessions' => 'sessions#create', :as => 'login'

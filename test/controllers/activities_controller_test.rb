@@ -372,7 +372,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		get(:getFriendsActivities, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({"id" => [act1.id, act2.id, act3.id]}, parsed_body["data"])
+		assert_json_list_contain({"id" => [act1.id, act2.id, act3.id]}, parsed_body["data"]["activities"])
 
 	end
 
@@ -407,7 +407,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		get(:getFriendsActivities, user2)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"])
+		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"]["activities"])
 
 	end
 
@@ -444,7 +444,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		get(:getFriendsTodos, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({"id" => [act4.id, act5.id, act6.id]}, parsed_body["data"])
+		assert_json_list_contain({"id" => [act4.id, act5.id, act6.id]}, parsed_body["data"]["activities"])
 
 	end
 
@@ -455,7 +455,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		user1 = createUser('user1@example.com', 'apple', 'pie')
 
 		act1 = createActivity(user1["id"], "act1")
-		act3 = createActivity(user1["id"], "act3", :start_time => "2014-05-14T05:31:14.976Z")
+		act3 = createActivity(user1["id"], "act3", :start_time => Date.today.next_week.next_week)
 		act4 = createActivity(user1["id"], "act4", :start_time => nil)
 
 		get(:myUpcomingActivities, user1)
@@ -473,7 +473,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		user2 = createUser('user2@example.com', 'apple', 'juice')
 
 		act1 = createActivity(user1["id"], "act1")
-		act3 = createActivity(user1["id"], "act3", :start_time => "2014-05-14T05:31:14.976Z")
+		act3 = createActivity(user1["id"], "act3", :start_time => Date.today.next_week.next_week)
 		act4 = createActivity(user1["id"], "act4", :start_time => nil)
 
 		user1["activity_id"] = act1.id
@@ -482,7 +482,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		get(:getActivity, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({"id" => [act1.id]}, parsed_body["data"])
+		assert_equal(act1.id, parsed_body["data"]["id"])
 
 	end
 
@@ -494,7 +494,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		user2 = createUser('user2@example.com', 'apple', 'juice')
 
 		act1 = createActivity(user1["id"], "act1")
-		act3 = createActivity(user1["id"], "act3", :start_time => "2014-05-14T05:31:14.976Z")
+		act3 = createActivity(user1["id"], "act3", :start_time => Date.today.next_week.next_week)
 		act4 = createActivity(user1["id"], "act4", :start_time => nil)
 
 		user1["activity_id"] = act1.id
@@ -503,7 +503,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		get(:getActivity, user2)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({"id" => [act3.id]}, parsed_body["data"])
+		assert_equal(act3.id, parsed_body["data"]["id"])
 
 	end
 
@@ -516,7 +516,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 	end
 
 
-	def createActivity(host_id, name, start_time="2014-04-14T05:31:14.976Z", visibility=GUEST, location="", description="")
+	def createActivity(host_id, name, start_time=Date.today.next_week, visibility=GUEST, location="", description="")
 		act = Activity.new(:host_id => host_id, :name => name, :start_time => start_time, :visibility => visibility,
 										:location => location, :description => description)
 		assert_not_nil(act.save)
