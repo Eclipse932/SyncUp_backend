@@ -20,7 +20,7 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where("start_time IS NOT NULL").where(:id => ids)
 		js = []
 		acts.each do |act|
-			js += [getAct(act)]
+			js += [self.getAct(act)]
 		end
 		renderJSON(200, true, "get my activities", js)
 
@@ -33,11 +33,7 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil)
 		js = []
 		acts.each do |act|
-			entry = act.as_json
-			if act.photo.exists?
-				addUrl(entry, act)
-			end
-			js += [entry]
+			js += [self.getAct(act)]
 
 		end
 		renderJSON(200, true, "get my activities", js)
@@ -192,7 +188,7 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where(:id => ids, :start_time => Date.today..Date.today.next_month)
 		js = []
 		acts.each do |act|
-			js += [getAct(act)]
+			js += [self.getAct(act)]
 		end
 
 		renderJSON(200, true, "activities!", js)
@@ -221,12 +217,7 @@ class ActivitiesController < ApplicationController
 		params.permit!
 		activity_id = params[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
-		act = activity.as_json
-		if activity.photo.exists?
-			act[:photo_origin] = activity.photo.url(:origin)
-			act[:photo_medium] = activity.photo.url(:medium)
-			act[:photo_thumbnail] = activity.photo.url(:thumb)
-		end
+		act = self.getAct(activity)
 		isHost = false
 		if current_user.id == activity.host_id
 				isHost = true
@@ -243,13 +234,12 @@ class ActivitiesController < ApplicationController
 		end
 	end
 
-
 	def getAct(act)
 		entry = act.as_json
 		if act.photo.exists?
-			entry[:photo_thumbnail] = activity.photo.url(:thumb)
-			entry[:photo_medium] = activity.photo.url(:medium)
-			entry[:photo_origin] = activity.photo.url(:origin)
+			entry[:photo_thumbnail] = act.photo.url(:thumb)
+			entry[:photo_medium] = act.photo.url(:medium)
+			entry[:photo_original] = act.photo.url(:original)
 		end
 		return entry
 	end
