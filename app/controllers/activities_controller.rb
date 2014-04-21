@@ -24,7 +24,7 @@ class ActivitiesController < ApplicationController
 			if act.photo.exists?
 				entry[:photo_thumbnail] = act.photo.url(:thumb)
 				entry[:photo_medium] = act.photo.url(:medium)
-				entry[:photo_origin] = act.photo.url(:origin)
+				entry[:photo_original] = act.photo.url(:original)
 			end
 			js += [entry]
 		end
@@ -43,7 +43,7 @@ class ActivitiesController < ApplicationController
 			if act.photo.exists?
 				entry[:photo_thumbnail] = act.photo.url(:thumb)
 				entry[:photo_medium] = act.photo.url(:medium)
-				entry[:photo_origin] = act.photo.url(:origin)
+				entry[:photo_original] = act.photo.url(:original)
 			end
 			js += [entry]
 
@@ -170,7 +170,7 @@ class ActivitiesController < ApplicationController
             if activity.photo.exists?
 							entry[:photo_thumbnail] = activity.photo.url(:thumb)
 							entry[:photo_medium] = activity.photo.url(:medium)
-							entry[:photo_origin] = activity.photo.url(:origin)
+							entry[:photo_original] = activity.photo.url(:original)
 						end
 						js += [entry]
         end
@@ -196,7 +196,7 @@ class ActivitiesController < ApplicationController
             if activity.photo.exists?
 							entry[:photo_thumbnail] = activity.photo.url(:thumb)
 							entry[:photo_medium] = activity.photo.url(:medium)
-							entry[:photo_origin] = activity.photo.url(:origin)
+							entry[:photo_original] = activity.photo.url(:original)
 						end
 						js += [entry]
         end
@@ -216,7 +216,7 @@ class ActivitiesController < ApplicationController
 			if act.photo.exists?
 				entry[:photo_thumbnail] = act.photo.url(:thumb)
 				entry[:photo_medium] = act.photo.url(:medium)
-				entry[:photo_origin] = act.photo.url(:origin)
+				entry[:photo_original] = act.photo.url(:original)
 			end
 			js += [entry]
 		end
@@ -248,7 +248,7 @@ class ActivitiesController < ApplicationController
 		activity = Activity.find_by(:id => activity_id)
 		act = activity.as_json
 		if activity.photo.exists?
-			act[:photo_origin] = activity.photo.url(:origin)
+			act[:photo_original] = activity.photo.url(:original)
 			act[:photo_medium] = activity.photo.url(:medium)
 			act[:photo_thumbnail] = activity.photo.url(:thumb)
 		end

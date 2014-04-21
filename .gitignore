@@ -21,3 +21,6 @@ public/system/*
 *.swo
 
 .idea/*
+
+# Emacs? temp files
+*~
