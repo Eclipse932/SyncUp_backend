@@ -248,13 +248,18 @@ class ActivitiesController < ApplicationController
 		params.permit!
 		activity_id = params[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
-		activity.destroy
-		attendees = Attendee.where(:activity_id => activity_id)
-		attendees.each do |attendee|
-	        attendee.destroy
+		if activity.nil?
+			renderJSON(200, true, "activity already deleted")
+		else 
+			activity.destroy
+			attendees = Attendee.where(:activity_id => activity_id)
+			attendees.each do |attendee|
+	        	attendee.destroy
+			end
+			renderJSON(200, true, "delete the activity")
 		end
 	end
 
-	
+
 end
 
