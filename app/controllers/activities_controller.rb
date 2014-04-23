@@ -119,10 +119,14 @@ class ActivitiesController < ApplicationController
 		if act and Activity.visible?(current_user.id, act)
 			attendee_list = Attendee.where(:activity_id => act.id)
 			ids = attendee_list.map(&:user_id)
-			attendee_list.each do |attendee|
-				roles += ""+attendee.user_id+":"+attendee.role;
+
+			returnUser = User.findUser(:id => ids)
+
+			returnUser.each do |user|
+				roles += (Attendee.where(:user_id => user.id)).map(&:role)
 			end
-			renderJSON(200, true, "get all attendees", {:users => User.findUser(:id => ids), :roles => roles})
+
+			renderJSON(200, true, "get all attendees", {:users => returnUser, :roles => roles})
 		else
 			renderJSON(200, false, "activity not exists or not visible")
 		end
