@@ -111,7 +111,7 @@ class ActivitiesController < ApplicationController
 			renderJSON(200, false, "not in the pending list") 
 		end
 	end
-
+ 
 
 	def getActivityAttendees
 		permitted = params.require(:activity).permit(:activity_id)
