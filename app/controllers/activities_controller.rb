@@ -117,7 +117,7 @@ class ActivitiesController < ApplicationController
 		permitted = params.require(:activity).permit(:activity_id)
 		act = Activity.find_by(:id => permitted[:activity_id])
 		if act and Activity.visible?(current_user.id, act)
-			attendee_list = Attendee.where(:activity_id => act.id, :role => GUEST)
+			attendee_list = Attendee.where(:activity_id => act.id)
 			ids = attendee_list.map(&:user_id)
 			ids += [act.host_id]
 			renderJSON(200, true, "get all attendees", User.findUser(:id => ids))
