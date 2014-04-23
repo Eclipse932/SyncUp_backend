@@ -246,10 +246,11 @@ class ActivitiesController < ApplicationController
 
 	def deleteActivity
 		params.permit!
-		activity_id = params[:activity_id]
+		activity_json = params[:activity]
+		activity_id = activity_json[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
 		if activity.nil?
-			renderJSON(200, true, "activity already deleted")
+			renderJSON(200, true, "activity already deleted whooo")
 		else 
 			if activity.host_id == current_user.id
 				activity.destroy
