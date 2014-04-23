@@ -123,7 +123,9 @@ class ActivitiesController < ApplicationController
 			attendee_list.each do |att|
 				roles += [att.user_id.to_s+":"+att.role.to_s]
 			end
-			renderJSON(200, true, "get all attendees", {:users => User.findUser(:id => ids), :roles => roles})
+			myRole = Attendee.where(:activity_id => act.id, :user_id => current_user.id)
+			myRoleReturn = myRole.map(&:role)
+			renderJSON(200, true, "get all attendees", {:myRole => myRoleReturn, :users => User.findUser(:id => ids), :roles => roles})
 		else
 			renderJSON(200, false, "activity not exists or not visible")
 		end
