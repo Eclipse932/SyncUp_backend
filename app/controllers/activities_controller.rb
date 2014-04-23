@@ -243,4 +243,18 @@ class ActivitiesController < ApplicationController
 		return entry
 	end
 
+
+	def deleteActivity
+		params.permit!
+		activity_id = params[:activity_id]
+		activity = Activity.find_by(:id => activity_id)
+		activity.destroy
+		attendees = Attendee.where(:activity_id => activity_id)
+		attendees.each do |attendee|
+	        attendee.destroy
+		end
+	end
+
+	
 end
+

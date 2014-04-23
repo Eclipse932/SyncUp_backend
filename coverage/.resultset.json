@@ -162,7 +162,7 @@
   },
   "RSpec": {
     "coverage": {
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/activity.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/models/activity.rb": [
         1,
         null,
         null,
@@ -222,7 +222,7 @@
         null,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/attendee.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/models/attendee.rb": [
         1,
         1,
         1,
@@ -231,7 +231,7 @@
         null,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/models/friendship.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/models/friendship.rb": [
         1,
         null,
         null,
@@ -244,47 +244,47 @@
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/registrations_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v1/registrations_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/sessions_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v1/sessions_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v1/users_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v1/users_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/activities_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v2/activities_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/friendships_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v2/friendships_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/registrations_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v2/registrations_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/sessions_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v2/sessions_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/api/v2/users_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/api/v2/users_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/application_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/application_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/helpers/home_helper.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/helpers/home_helper.rb": [
         1,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/activities_controller.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/controllers/activities_controller.rb": [
         1,
         null,
         1,
@@ -511,13 +511,13 @@
         null,
         null,
         2,
-        null,
-        null,
         1,
         null,
         null,
         null,
         1,
+        null,
+        null,
         null,
         null,
         null,
@@ -533,7 +533,7 @@
         null,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/application_controller.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/controllers/application_controller.rb": [
         1,
         null,
         null,
@@ -541,9 +541,6 @@
         1,
         null,
         1,
-        null,
-        null,
-        null,
         51,
         null,
         null,
@@ -553,6 +550,9 @@
         null,
         null,
         null,
+        null,
+        null,
+        null,
         1,
         1,
         53,
@@ -570,7 +570,7 @@
         null,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/friendships_controller.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/controllers/friendships_controller.rb": [
         1,
         null,
         1,
@@ -678,7 +678,7 @@
         null,
         null
       ],
-      "/Users/dyf/Dropbox/cs169/SyncUp_backend/app/controllers/users_controller.rb": [
+      "/Users/Arya/Desktop/old_D/CS169/SyncUp_backend/app/controllers/users_controller.rb": [
         1,
         null,
         1,
@@ -691,17 +691,17 @@
         6,
         6,
         1,
-        null,
-        null,
-        null,
-        null,
-        null,
         1,
+        null,
+        null,
         null,
         null,
         null,
         null,
         5,
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -767,6 +767,6 @@
         null
       ]
     },
-    "timestamp": 1397863383
+    "timestamp": 1398216687
   }
 }
