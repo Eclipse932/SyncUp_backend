@@ -260,12 +260,14 @@ class ActivitiesController < ApplicationController
 				end
 				renderJSON(200, true, "host delete the activity")
 			else
-				guest = Attendee.where(:activity_id => activity_id)
-				if guest.nil?
-					renderJSON(200, true, "guest already not going to the activity")
-				else
-					guest.destroy
-					renderJSON(200,true, "guest decides not to go to the activity")
+				guest = Attendee.where(:activity_id => activity_id,:user_id => current_user.id)
+				guest.each do |gst|					
+					if gst.nil?
+						renderJSON(200, true, "guest already not going to the activity")
+					else
+						gst.destroy
+						renderJSON(200,true, "guest decides not to go to the activity")
+					end
 				end
 			end
 		end
