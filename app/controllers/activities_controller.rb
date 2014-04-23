@@ -119,6 +119,7 @@ class ActivitiesController < ApplicationController
 		if act and Activity.visible?(current_user.id, act)
 			attendee_list = Attendee.where(:activity_id => act.id)
 			ids = attendee_list.map(&:user_id)
+			roles = []
 			attendee_list.each do |att|
 				roles += att.user_id
 			end
