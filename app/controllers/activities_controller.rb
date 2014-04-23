@@ -20,7 +20,7 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where("start_time IS NOT NULL").where(:id => ids)
 		js = []
 		acts.each do |act|
-			js += [self.getAct(act)]
+	        js += [self.getAct(act)]
 		end
 		renderJSON(200, true, "get my activities", js)
 
@@ -33,8 +33,7 @@ class ActivitiesController < ApplicationController
 		acts = Activity.where(:id => ids, :host_id=> current_user.id, :start_time => nil)
 		js = []
 		acts.each do |act|
-			js += [self.getAct(act)]
-
+	        js += [self.getAct(act)]
 		end
 		renderJSON(200, true, "get my activities", js)
 	end

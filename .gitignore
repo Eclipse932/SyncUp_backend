@@ -21,3 +21,9 @@ public/system/*
 *.swo
 
 .idea/*
+
+# Emacs? temp files
+*~
+
+# Python temp
+*.pyc
