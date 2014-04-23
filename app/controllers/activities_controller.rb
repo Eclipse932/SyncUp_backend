@@ -119,8 +119,9 @@ class ActivitiesController < ApplicationController
 		if act and Activity.visible?(current_user.id, act)
 			attendee_list = Attendee.where(:activity_id => act.id)
 			ids = attendee_list.map(&:user_id)
+			roles = attendee_list.map(&:role);
 			ids += [act.host_id]
-			renderJSON(200, true, "get all attendees", User.findUser(:id => ids))
+			renderJSON(200, true, "get all attendees", {:users => User.findUser(:id => ids), :roles => roles})
 		else
 			renderJSON(200, false, "activity not exists or not visible")
 		end
