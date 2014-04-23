@@ -76,6 +76,7 @@ Iter1::Application.routes.draw do
     post 'requestFriend' => 'friendships#requestFriend'
     post 'confirmFriend' => 'friendships#confirmFriend'
     post 'deleteRequest' => 'friendships#deleteRequest'
+    post 'deleteActivity' => "activities#deleteActivity"
 
   end 
   # The priority is based upon order of creation: first created -> highest priority.
