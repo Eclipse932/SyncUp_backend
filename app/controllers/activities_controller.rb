@@ -121,7 +121,7 @@ class ActivitiesController < ApplicationController
 			ids = attendee_list.map(&:user_id)
 			roles = []
 			attendee_list.each do |att|
-				roles += [att.user_id]
+				roles += [att.user_id.to_s+":"+att.role.to_s]
 			end
 			renderJSON(200, true, "get all attendees", {:users => User.findUser(:id => ids), :roles => roles})
 		else
