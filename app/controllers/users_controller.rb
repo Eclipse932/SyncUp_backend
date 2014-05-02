@@ -26,16 +26,10 @@ class UsersController < ApplicationController
 		
 
 	def searchUser
-		permitted = params.require(:user).permit(:id, :email, :first_name, :last_name)
-		users = User.findUser(permitted)
-		renderJSON(200, true, "get users", users)
-	end
-
-	def searchUserByPrefix
 		user = params[:user]
-		prefix = user.email
+		prefix = user[:email]
 		users = User.findApproximateUser(prefix)
-		renderJSON(200, true, "get approximate users", users)
+		renderJSON(200, true, "get users", users)
 	end
 
 
