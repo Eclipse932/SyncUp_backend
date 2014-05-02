@@ -634,6 +634,22 @@ class ActivitiesControllerTest < ActionController::TestCase
 
 	end
 
+	def test_deleteActivity_as_host
+		puts "\nCalling test_deleteActivity_as_host"
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		act1 = createActivity(user1["id"], "act1")
+
+		#user1["activity_id"] = act1.id
+		post(:deleteActivity, {'activity'=> {"activity_id" : act1.id, user1}})
+		parsed_body = JSON.parse(response.body)
+		assert_equal(true, parsed_body["success"])
+		assert_equal("host delete the activity", parsed_body["data"])
+	end
+
+
+	def test_deleteActivity_as_guest
+
+	end
 
  	def createUser(email, first_name="", last_name="")
 		user = User.new(:email => email, :password => 'password', :password_confirmation => 'password',

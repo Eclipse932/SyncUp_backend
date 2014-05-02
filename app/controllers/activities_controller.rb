@@ -255,7 +255,7 @@ class ActivitiesController < ApplicationController
 		activity_id = activity_json[:activity_id]
 		activity = Activity.find_by(:id => activity_id)
 		if activity.nil?
-			renderJSON(200, true, "activity already deleted whooo")
+			renderJSON(200, true, "activity already deleted")
 		else 
 			if activity.host_id == current_user.id
 				activity.destroy
