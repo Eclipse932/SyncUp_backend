@@ -335,7 +335,7 @@ class ActivitiesControllerTest < ActionController::TestCase
 		post(:getActivityAttendees, user1)
 		parsed_body = JSON.parse(response.body)
 		assert_equal(true, parsed_body["success"])
-		assert_json_list_contain({"id" => [user1["id"], user2["id"], user3["id"]]}, parsed_body["data"])
+		assert_json_list_contain({"id" => [user1["id"], user2["id"], user3["id"]]}, parsed_body["data"]["users"])
 
 	end
 
