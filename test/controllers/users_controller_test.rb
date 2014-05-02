@@ -126,20 +126,11 @@ class UsersControllerTest < ActionController::TestCase
 		parsed_body = JSON.parse(response.body)
 		assert_json_list_contain({"email" => ['user4@example.com']}, parsed_body["data"])
 
-		request_json['user'] = { 'first_name' => 'apple'}
+		request_json['user'] = { 'email' => 'user'}
 		post(:searchUser, request_json)
 		parsed_body = JSON.parse(response.body)
-		assert_json_list_contain({"email" => ['user1@example.com', 'user2@example.com']}, parsed_body["data"])
+		assert_json_list_contain({"email" => ['user2@example.com', 'user3@example.com', 'user4@example.com']}, parsed_body["data"])
 
-		request_json['user'] = { 'first_name' => 'apple', 'last_name' => 'juice'}
-		post(:searchUser, request_json)
-		parsed_body = JSON.parse(response.body)
-		assert_json_list_contain({"email" => ['user2@example.com']}, parsed_body["data"])
-
-		request_json['user'] = { 'last_name' => 'juice'}
-		post(:searchUser, request_json)
-		parsed_body = JSON.parse(response.body)
-		assert_json_list_contain({"email" => ['user2@example.com', 'user3@example.com']}, parsed_body["data"])
 	end
 
 
