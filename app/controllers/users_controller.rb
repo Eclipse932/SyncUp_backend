@@ -29,7 +29,8 @@ class UsersController < ApplicationController
 		user = params[:user]
 		prefix = user[:email]
 		users = User.findApproximateUser(prefix)
-		renderJSON(200, true, "get users", users)
+		filtered_users = users.reject {|user| current_user.id == user.id}
+		renderJSON(200, true, "get users", filtered_users)
 	end
 
 

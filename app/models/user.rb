@@ -44,18 +44,18 @@ class User < ActiveRecord::Base
 	end
 
 
-    # TODO: this is kinda hacky (using a column to store a url), but whatever for now
-	def self.findUser(userJSON)
-		users = User.select("first_name, last_name, email, id, description, avatar_file_name").where(userJSON)
-		users.each do |user|
-            logger.info user.first_name
-			if user.avatar.exists?
-                puts user.avatar_url
-				user[:avatar_file_name] = user.avatar_url
-			end
-		end
-		users
-	end
+    
+	#def self.findUser(userJSON)
+		#users = User.select("first_name, last_name, email, id, description, avatar_file_name").where(userJSON)
+		#users.each do |user|
+            #logger.info user.first_name
+			#if user.avatar.exists?
+                #puts user.avatar_url
+				#user[:avatar_file_name] = user.avatar_url
+			#end
+		#end
+		#users
+	#end
 
 	def self.findApproximateUser(email_prefix)
 		users = User.where("email LIKE :prefix", prefix: "#{email_prefix}%")
