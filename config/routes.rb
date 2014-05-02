@@ -78,6 +78,9 @@ Iter1::Application.routes.draw do
     post 'deleteRequest' => 'friendships#deleteRequest'
     post 'deleteActivity' => "activities#deleteActivity"
 
+    post 'updateProfile'  => "users#updateMyProfile"
+    post 'updatePassword' => "users#updatePassword"
+
   end 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
