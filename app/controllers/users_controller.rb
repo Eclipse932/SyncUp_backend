@@ -17,7 +17,7 @@ class UsersController < ApplicationController
                                      :email => current_user.email,
                                      :user => user} }
         else
-          render :status => :unprocessable_entity,
+          render :status => 200,
                  :json => { :success => false,
                             :info => user.errors,
                             :data => {} }
