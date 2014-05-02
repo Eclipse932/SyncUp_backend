@@ -67,26 +67,26 @@ class UsersController < ApplicationController
 		end
 	end
 
-	def resetFixture
-		User.delete_all
-	 	Activity.delete_all
-	 	Attendee.delete_all
-		Friendship.delete_all
-	 	renderJSON(200, true, "reset succeed")
-	end
+	# def resetFixture
+	# 	User.delete_all
+	#  	Activity.delete_all
+	#  	Attendee.delete_all
+	# 	Friendship.delete_all
+	#  	renderJSON(200, true, "reset succeed")
+	# end
 
 
-	 def unitTests
-	 	if Rails.env == "production"
-	 		output = `RAILS_ENV=development ruby -Itest test/models/user_test.rb`
-	 	else
-	 		output = `ruby -Itest test/models/user_test.rb`
-		end
-		logger.debug output
-	 	testInfo = output.split(/\n/)
-	 	testInfo = testInfo[-1].split(", ")
-	 	render(:json=>{"nrFailed" => testInfo[2].split()[0].to_i, "output" => output,
-	 			"totalTests" => testInfo[0].split()[0].to_i}, status:200)
-	end
+	#  def unitTests
+	#  	if Rails.env == "production"
+	#  		output = `RAILS_ENV=development ruby -Itest test/models/user_test.rb`
+	#  	else
+	#  		output = `ruby -Itest test/models/user_test.rb`
+	# 	end
+	# 	logger.debug output
+	#  	testInfo = output.split(/\n/)
+	#  	testInfo = testInfo[-1].split(", ")
+	#  	render(:json=>{"nrFailed" => testInfo[2].split()[0].to_i, "output" => output,
+	#  			"totalTests" => testInfo[0].split()[0].to_i}, status:200)
+	# end
 
 end

@@ -639,16 +639,31 @@ class ActivitiesControllerTest < ActionController::TestCase
 		user1 = createUser('user1@example.com', 'apple', 'pie')
 		act1 = createActivity(user1["id"], "act1")
 
+		user1["activity"] = {:activity_id => act1.id}
 		#user1["activity_id"] = act1.id
-		post(:deleteActivity, {'activity'=> {"activity_id" : act1.id, user1}})
+		post(:deleteActivity, user1)
 		parsed_body = JSON.parse(response.body)
+		puts parsed_body
 		assert_equal(true, parsed_body["success"])
-		assert_equal("host delete the activity", parsed_body["data"])
+		assert_equal("host delete the activity", parsed_body["info"])
 	end
 
 
 	def test_deleteActivity_as_guest
+		puts "\nCalling test_deleteActivity_as_guest"
+		user1 = createUser('user1@example.com', 'apple', 'pie')
+		user2 = createUser('user2@example.com', 'apple', 'pie')
+		act1 = createActivity(user1["id"], "act1")
 
+		user2["activity"] = {:activity_id => act1.id}
+		atd = Attendee.new(:user_id => user2["id"], :activity_id => act1.id, :role => GUEST)
+		assert_not_nil(atd.save)
+		#user1["activity_id"] = act1.id
+		post(:deleteActivity, user2)
+		parsed_body = JSON.parse(response.body)
+		puts parsed_body
+		assert_equal(true, parsed_body["success"])
+		assert_equal("guest decides not to go to the activity", parsed_body["info"])
 	end
 
  	def createUser(email, first_name="", last_name="")
