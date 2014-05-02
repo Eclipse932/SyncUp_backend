@@ -31,6 +31,13 @@ class UsersController < ApplicationController
 		renderJSON(200, true, "get users", users)
 	end
 
+	def searchUserByPrefix
+		user = params[:user]
+		prefix = user.email
+		users = User.findApproximateUser(prefix)
+		renderJSON(200, true, "get approximate users", users)
+	end
+
 
 	def getMyProfile
 		user = User.select("first_name, last_name, email, id, description, avatar_file_name, last_sign_in_at").find(current_user.id)

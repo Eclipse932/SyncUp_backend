@@ -57,6 +57,18 @@ class User < ActiveRecord::Base
 		users
 	end
 
+	def self.findApproximateUser(email_prefix)
+		users = User.where("email LIKE :prefix", prefix: "#{email_prefix}%")
+		users.each do |user|
+            logger.info user.first_name
+			if user.avatar.exists?
+                puts user.avatar_url
+				user[:avatar_file_name] = user.avatar_url
+			end
+		end
+		users
+	end
+
 
 	def user_params
 		params.require(:user).permit(:avatar)
