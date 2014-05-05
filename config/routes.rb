@@ -43,6 +43,7 @@ Iter1::Application.routes.draw do
   devise_scope :user do
 
     post 'searchUser' => 'users#searchUser'
+    post 'findUser' => 'users#findUser'
     post 'registrations' => 'users#create', :as => 'register'
     post '/TESTAPI/resetFixture' => 'users#resetFixture'
     post '/TESTAPI/unitTests' => 'users#unitTests'

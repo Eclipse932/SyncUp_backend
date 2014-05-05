@@ -37,6 +37,12 @@ class UsersController < ApplicationController
 		end
 	end
 
+	def findUser
+		permitted = params.require(:user).permit(:id, :email, :first_name, :last_name)
+		users = User.findUser(permitted)
+		renderJSON(200, true, "get users", users)
+	end
+
 
 	def getMyProfile
 		user = User.select("first_name, last_name, email, id, description, phone_number, avatar_file_name, last_sign_in_at").find(current_user.id)
