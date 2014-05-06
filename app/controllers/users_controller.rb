@@ -45,16 +45,13 @@ class UsersController < ApplicationController
 
 
 	def getMyProfile
-		user = User.select("first_name, last_name, email, id, description, phone_number, avatar_file_name, last_sign_in_at").find(current_user.id)
-
-		if current_user.avatar.exists?
-			user[:avatar] = Base64.encode64(open(current_user.avatar.path(:thumbnail)){ |io| io.read })
-		end
+		user = User.findUser(:id => current_user.id)
+		user = user[0]
 		renderJSON(200, true, "get my profile", user)
 	end
 
 	def updateMyProfile
-		permitted = params.require(:user).permit(:first_name, :last_name, :description, :phone_number)
+		permitted = params.require(:user).permit(:first_name, :last_name, :description, :phone_number, :avatar)
 		User.update(current_user.id, permitted)
 		renderJSON(200, true, "profile updated")
 	end
